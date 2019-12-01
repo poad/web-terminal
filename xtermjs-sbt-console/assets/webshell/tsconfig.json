@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "types" : ["node", "express", "pty.js", "socket.io", "ws"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [ "es2019", "dom" ],
+    "rootDir": ".",
+    "sourceMap": true,
+    "baseUrl": "src",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "alwaysStrict": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "allowUnreachableCode": true
+  }
+}
