@@ -1,4 +1,4 @@
-# xterm.js based image
+# jshell based xterm.js
 
 ## Safari with IME
 
