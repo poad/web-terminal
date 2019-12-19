@@ -7,4 +7,7 @@ do
   cd ${CUR}/${target}
   yarn upgrade
   yarn install
+  cd assets/webshell
+  yarn upgrade
+  yarn install
 done
