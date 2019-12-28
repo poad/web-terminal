@@ -1,5 +1,5 @@
-image:https://img.shields.io/docker/cloud/automated/poad/web-terminal?style=flat-square[Docker Automated build,link=https://hub.docker.com/r/poad/web-terminal]
-image:https://img.shields.io/docker/cloud/build/poad/web-terminal[Docker Cloud Build Status,link=https://hub.docker.com/r/poad/web-terminal]
+[![Docker Automated build](https://img.shields.io/docker/cloud/automated/poad/web-terminal?style=flat-square)](https://hub.docker.com/r/poad/web-terminal)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/poad/web-terminal)](https://hub.docker.com/r/poad/web-terminal/builds)
 
 # About
 
