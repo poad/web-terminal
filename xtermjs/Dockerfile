@@ -1,16 +1,17 @@
 ARG BASE_IMAGE="lts-buster-slim"
 
-ARG GPG_KEY=E3FF2839C048B25C084DEBE9B26995E310250568
-ARG PYTHON_VERSION=3.8.0
-ARG PYTHON_PIP_VERSION=19.3.1
+ARG PYTHON_XZ_GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568"
+ARG PYTHON_VERSION="3.8.0"
+ARG PYTHON_PIP_VERSION="19.3.1"
 # https://github.com/pypa/get-pip
-ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/ffe826207a010164265d9cc807978e3604d18ca0/get-pip.py
-ARG PYTHON_GET_PIP_SHA256=b86f36cc4345ae87bfd4f10ef6b2dbfa7a872fbff70608a1e43944d283fd0eee
+ARG PIP_DOWNLOAD_HASH="ffe826207a010164265d9cc807978e3604d18ca0"
+ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
+ARG PYTHON_GET_PIP_SHA256="b86f36cc4345ae87bfd4f10ef6b2dbfa7a872fbff70608a1e43944d283fd0eee"
 
 
 FROM alpine:latest AS downloader
 
-ARG GPG_KEY
+ARG PYTHON_XZ_GPG_KEY
 ARG PYTHON_VERSION
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
@@ -29,23 +30,23 @@ RUN apk add --no-cache --virtual .build-deps \
     xz 
 
 WORKDIR /tmp
-RUN wget -O get-pip.py "$PYTHON_GET_PIP_URL" \
- && echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c - \
+RUN wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
+ && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
  && set -ex \
  \
- && wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
- && wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" \
+ && wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
+ && wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
  && export GNUPGHOME="$(mktemp -d)" \
  && for key in \
-    "$GPG_KEY" \
+    "${PYTHON_XZ_GPG_KEY}" \
  ; do \
-   gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$key" || \
-   gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "$key" || \
-   gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "$key" ; \
+   gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "${key}" || \
+   gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "${key}" || \
+   gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "${key}" ; \
  done \
  && gpg --batch --verify python.tar.xz.asc python.tar.xz \
  && { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
- && rm -rf "$GNUPGHOME" python.tar.xz.asc \
+ && rm -rf "${GNUPGHOME}" python.tar.xz.asc \
  && mkdir -p /usr/src/python \
  && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
  && rm python.tar.xz \
