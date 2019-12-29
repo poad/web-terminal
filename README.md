@@ -1,9 +1,9 @@
-![Docker Automated build](https://img.shields.io/docker/cloud/automated/poad/web-terminal?style=flat-square)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/poad/web-terminal)
+[![Docker Automated build](https://img.shields.io/docker/cloud/automated/poad/web-terminal?style=flat-square)](https://hub.docker.com/r/poad/web-terminal)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/poad/web-terminal)](https://hub.docker.com/r/poad/web-terminal/builds)
 
 # About
 
-The terminal emulator on Web browser. 
+The terminal emulator on Web browser.
 
 # Tags
 
@@ -54,9 +54,8 @@ The Rust REPL by [Evcxr REPL](https://github.com/google/evcxr/tree/master/evcxr_
 日本語版のmacOSの場合、英数字入力モードではキー入力を受け付けてくれないようです。
 解決方法などは下記をご参照ください。
 
-https://ytooyama.hatenadiary.jp/entry/2019/06/20/223936
-
+<https://ytooyama.hatenadiary.jp/entry/2019/06/20/223936>
 
 # License
 
-see [LICENSE](blob/master/LICENSE) 
+see [LICENSE](blob/master/LICENSE)
