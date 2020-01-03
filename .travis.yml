@@ -1,0 +1,21 @@
+os: linux
+
+language: bash
+before_install:
+  - curl -sL https://deb.nodesource.com/setup_12.x | bash -
+  - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+  - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt -qq update
+  - sudo apt -qqy --no-install-recommends install yarn nodejs    
+
+script:
+  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash -x update.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}" "${DIRECTORY}"; fi
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  if: branch = master
+  script: 
+    - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash -x build.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}" "${DIRECTORY}" &&
+      bash -x scan.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}" && 
+      bash docker_push.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}"; fi
