@@ -8,14 +8,9 @@ before_install:
   - sudo apt -qq update
   - sudo apt -qqy --no-install-recommends install yarn nodejs    
 
-script:
-  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then bash -x update.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}" "${DIRECTORY}"; fi
-
 deploy:
   provider: script
   skip_cleanup: true
   if: branch = master
   script: 
-    - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash -x build.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}" "${DIRECTORY}" &&
-      bash -x scan.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}" && 
-      bash docker_push.sh "${VERSION}" "${DISTRIBUTION}" "${LINUX_VERSION}"; fi
+    - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash -x git_push.sh; fi
