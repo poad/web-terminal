@@ -2,7 +2,7 @@ ARG JAVA_VERSION="11.0.5_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 
 
-FROM poad/docker-openjdk11:adopt-buster AS jdk
+FROM poad/docker-openjdk:11-adopt-buster AS jdk
 
 FROM poad/web-terminal:base
 
