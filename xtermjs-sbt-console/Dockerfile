@@ -19,7 +19,7 @@ ARG SBT_VERSION
 
 RUN curl -sL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp
 
-FROM poad/docker-openjdk11:adopt-buster AS jdk
+FROM poad/docker-openjdk:11-adopt-buster AS jdk
 
 FROM alpine:latest AS downloader
 
