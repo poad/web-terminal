@@ -17,17 +17,6 @@ if [ -z ${USER_ID} ]; then
   exit -1
 fi
 
-TMP_DIR=$(mktemp -d) && \
-cd ${TMP_DIR}
-
-git clone "https://${USER_ID}:${GITHUB_TOKEN}@github.com/${USER_ID}/${REPO}"
-if [ $? -ne 0 ]; then
-  echo "Failed clone https://${USER_ID}:\${GITHUB_TOKEN}@github.com/${USER_ID}/${REPO}"
-  exit -1
-fi
-
-cd ${REPO}
-
 env bash -x update.sh
 
 TIMESTAMP=$(date)
