@@ -22,5 +22,9 @@ ERROR:  While executing gem ... (Gem::FilePermissionError)
 MFA 設定の影響もあるのか、以下の2オプション付きでしかログイン出来なかった。
 
 ```$sh
-travis login --org --auto
+travis login --com --auto
 ```
+
+#### 参考
+
+<https://docs.travis-ci.com/user/encrypting-files#prerequisites>
