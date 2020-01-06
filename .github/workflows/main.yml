@@ -1,0 +1,47 @@
+name: git-secrets action example
+ 
+on:
+    - push
+    - schedule:
+        - cron:  '* * * * 3'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Update node modules
+      run: |
+        npm install -g yarn && \
+        ./update.sh
+    - name: Commit files
+      run: |
+        git config --local user.email "ken-yo@mbr.nifty.com"
+        git config --local user.name "Kenji Saito"
+        TIMESTAMP=$(date)
+        BRANCH_NAME="feature/bump-modules-$(date "+%Y%m%d-%H%M%S")"
+        git checkout -b "${BRANCH_NAME}"
+        git add *
+        git commit -m "Auto update at ${TIMESTAMP}"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+    - name: Create pull request
+      run: |
+        REQUEST_BODY=$(cat << PULL_REQUEST
+        {
+            "title": "Auto update at ${TIMESTAMP}",
+            "body": "Update the modules at ${TIMESTAMP}",
+            "head": "${BRANCH_NAME}",
+            "base": "master"
+        }
+        PULL_REQUEST
+        )
+        curl -X POST \
+            --url https://api.github.com/repos/poad/web-terminal/pulls \
+            --header 'content-type: application/vnd.github.sailor-v-preview+json' \
+            --header "authorization: bearer ${{ secrets.GITHUB_ACTIONS_TOKEN }}" \
+            --data "${REQUEST_BODY}"
+      
+      
