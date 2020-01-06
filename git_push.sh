@@ -28,7 +28,6 @@ fi
 
 cd ${REPO}
 
-
 env bash -x update.sh
 
 TIMESTAMP=$(date)

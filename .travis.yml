@@ -12,6 +12,10 @@ before_install:
   - curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
   # - sudo apt -qq update
   - sudo apt -qqy --no-install-recommends install yarn nodejs jq
+  - openssl aes-256-cbc -K $encrypted_264505c1c646_key -iv $encrypted_264505c1c646_iv -in travis-github-key.enc -out ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
+  - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
-script: 
+  script: 
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash git_push.sh; fi
