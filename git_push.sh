@@ -9,7 +9,7 @@ EMAIL=$(echo ${USER} | jq ".email")
 TMP_DIR=$(mktemp -d) && \
 cd ${TMP_DIR}
 
-git clone https://${USER}:${TOKEN}@github.com/${USER}/${REPO} && \
+git clone "https://${USER}:${TOKEN}@github.com/${USER}/${REPO}" && \
 cd ${REPO}
 
 env bash -x update.sh
