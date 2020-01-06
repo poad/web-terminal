@@ -14,4 +14,4 @@ before_install:
   - sudo apt -qqy --no-install-recommends install yarn nodejs    
 
 script: 
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash -x update.sh && bash git_push.sh; fi
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash git_push.sh; fi
