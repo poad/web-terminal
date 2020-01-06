@@ -27,6 +27,7 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+        branch: "${BRANCH_NAME}"
     - name: Create pull request
       run: |
         REQUEST_BODY=$(cat << PULL_REQUEST
