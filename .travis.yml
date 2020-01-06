@@ -11,7 +11,7 @@ before_install:
   - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
   - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
   - sudo apt -qq update
-  - sudo apt -qqy --no-install-recommends install yarn nodejs    
+  - sudo apt -qqy --no-install-recommends install yarn nodejs jq
 
 script: 
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash git_push.sh; fi

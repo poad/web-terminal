@@ -6,12 +6,15 @@ USER=$(curl -H "Authorization: token ${TOKEN}" https://api.github.com/user) && \
 USER_ID=$(echo ${USER} | jq ".login") && \
 EMAIL=$(echo ${USER} | jq ".email")
 
+echo ${USER_ID}
+echo ${EMAIL}
+
 TMP_DIR=$(mktemp -d) && \
 cd ${TMP_DIR}
 
-git clone "https://${USER}:${TOKEN}@github.com/${USER}/${REPO}"
+git clone "https://${USER_ID}:${TOKEN}@github.com/${USER_ID}/${REPO}"
 if [ $? -ne 0 ]; then
-  echo "Failed clone https://${USER}:\${TOKEN}@github.com/${USER}/${REPO}"
+  echo "Failed clone https://${USER_ID}:\${TOKEN}@github.com/${USER_ID}/${REPO}"
   exit -1
 fi
 
