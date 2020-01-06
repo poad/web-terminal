@@ -17,5 +17,5 @@ before_install:
   - chmod 600 ~/.ssh/id_rsa
   - echo -e "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 
-  script: 
+script: 
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then bash git_push.sh; fi
