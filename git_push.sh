@@ -6,6 +6,8 @@ USER=$(curl -H "Authorization: token ${TOKEN}" https://api.github.com/user) && \
 USER_ID=$(echo ${USER} | jq ".login") && \
 EMAIL=$(echo ${USER} | jq ".email")
 
+echo ${USER}
+
 echo ${USER_ID}
 echo ${EMAIL}
 
