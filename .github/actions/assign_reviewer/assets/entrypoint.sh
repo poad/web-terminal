@@ -15,6 +15,10 @@ REQUEST_BODY=$(cat << PULL_REQUEST
 PULL_REQUEST
 )
 
+echo ${INPUT_PULL_REQUEST_URL}
+
+echo "${REQUEST_BODY}"
+
 curl -X POST \
     --url ${INPUT_PULL_REQUEST_URL}/requested_reviewers \
     --header "authorization: bearer ${INPUT_GITHUB_TOKEN}" \
