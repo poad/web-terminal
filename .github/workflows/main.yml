@@ -23,18 +23,24 @@ jobs:
         git checkout -b "${BRANCH_NAME}"
         git add *
         git commit -m "Auto update at ${TIMESTAMP}"
+        echo "::set-output name=BRANCH_NAME::${BRANCH_NAME}"
+        echo "::set-output name=TIMESTAMP::${TIMESTAMP}"
+      outputs:
+        BRANCH_NAME: # id of the output
+          description: 'The branch name for pusg'
+
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
-        branch: "${BRANCH_NAME}"
+        branch: ${{ BRANCH_NAME }}
     - name: Create pull request
       run: |
         REQUEST_BODY=$(cat << PULL_REQUEST
         {
-            "title": "Auto update at ${TIMESTAMP}",
-            "body": "Update the modules at ${TIMESTAMP}",
-            "head": "${BRANCH_NAME}",
+            "title": "Auto update at ${{ TIMESTAMP }}",
+            "body": "Update the modules at ${{ TIMESTAMP }}",
+            "head": "${{ BRANCH_NAME }}",
             "base": "master"
         }
         PULL_REQUEST
