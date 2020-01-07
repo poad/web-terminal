@@ -9,10 +9,19 @@ REQUEST_BODY=$(cat << PULL_REQUEST
 }
 PULL_REQUEST
 )
-curl -X POST \
+
+RESPONSE=$(curl -X POST \
     --url https://api.github.com/repos/${INPUT_REPOSITORY}/pulls \
     --header 'content-type: application/vnd.github.sailor-v-preview+json' \
     --header "authorization: bearer ${INPUT_GITHUB_TOKEN}" \
-    --data "${REQUEST_BODY}"
+    --data "${REQUEST_BODY}")
+
+ret=$?
+if [ $? -ne 0 ]; then
+    exit ${ret}
+fi
+
+PULL_REQUEST_URL=$(echo ${RESPONSE} | jq -c ".url")
+echo "::set-output name=pull_request_url::${PULL_REQUEST_URL}"
 
 exit $?

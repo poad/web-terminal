@@ -8,7 +8,7 @@ on:
     - cron:  '* * * * 3'
 
 jobs:
-  build:
+  auto_update:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -25,17 +25,27 @@ jobs:
         git commit -m "Auto update at ${TIMESTAMP}"
         echo "::set-env name=BRANCH_NAME::${BRANCH_NAME}"
         echo "::set-env name=TIMESTAMP::${TIMESTAMP}"
-
     - name: Push Changes
+      if: success()
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
     - name: Create pull request
-      uses: ./.github/actions
+      id: create_pull_request
+      if: success()
+      uses: ./.github/actions/create_pull_request
       with:
         branch_name: ${{ env.BRANCH_NAME }}
         title: ${{ format('Auto update at {0}', env.TIMESTAMP) }}
         body: ${{ format('Update the modules at {0}', env.TIMESTAMP) }}
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
         repository: ${{ github.repository }}
+    - name: Assign to pull request
+      if: success()
+      uses: ./.github/actions/assign_reviewer
+      with:
+        pull_request_url: ${{ steps.auto_update.create_pull_request.outputs.pull_request_url }}
+        requested_reviewer: ${{ env.GITHUB_ACTOR }}
+        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+  

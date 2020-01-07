@@ -1,24 +1,51 @@
+
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2019",
     "module": "commonjs",
     "moduleResolution": "node",
-    "types" : ["node", "express", "pty.js", "socket.io", "ws"],
+    "types" : [
+      "node",
+      "express",
+      "pty.js",
+      "socket.io",
+      "@types/node",
+      "ws"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ],
-    "lib": [ "es2019", "dom" ],
-    "rootDir": ".",
-    "sourceMap": true,
-    "baseUrl": "src",
+    "lib": [
+      "esnext",
+      "es2019",
+      "dom"
+    ],
     "esModuleInterop": true,
     "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "noEmit": true,
+    "noLib": false,
+    "experimentalDecorators": true,
+    "newLine": "LF",
+    "rootDir": ".",
+    "baseUrl": "src",
     "alwaysStrict": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "allowUnreachableCode": true
-  }
+    "allowUnreachableCode": true,
+    "paths": {
+      "~/*": [
+        "./*"
+      ],
+      "@/*": [
+        "./*"
+      ]
+    },
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }

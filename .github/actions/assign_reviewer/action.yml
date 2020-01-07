@@ -1,0 +1,17 @@
+name: 'Assign Reviewer GitHub Pull Reaquest Action'
+description: 'Assign Reviewer to a GitHub Pull Request.'
+author: 'Kenji Saito <ken-yo@mbr.nifty.com>'
+branding:
+  icon: 'terminal'
+  color: 'yellow'
+inputs:
+  pull_request_url:
+    description: URL of target GitHub Pull Request
+    required: true
+  requested_reviewer:
+    description: a reviewer for assign. If want to assign multiple users, then specify runs.args
+  github_token:
+    required: true
+runs:
+  using: 'docker'
+  image: './Dockerfile'
