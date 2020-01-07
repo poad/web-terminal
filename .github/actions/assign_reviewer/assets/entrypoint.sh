@@ -1,9 +1,9 @@
 #!/usr/bin/env ash
 
-if [ $# -ne 0 ];
+if [ $# -ne 0 ]; then
   REVIEWERS=$(echo $@ | sed -e "s/ /,/g")
 else
-  REVIEWERS=${INPUT_REQUESTED_REVIEWER}"
+  REVIEWERS=${INPUT_REQUESTED_REVIEWER}
 fi
 
 REQUEST_BODY=$(cat << PULL_REQUEST
