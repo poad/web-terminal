@@ -15,7 +15,6 @@ jobs:
     - uses: docker://node:lts-buster-slim
     - run: ./update.sh
     - name: Commit files
-      id: commit_files
       run: |
         git config --local user.email "ken-yo@mbr.nifty.com"
         git config --local user.name "Kenji Saito"
@@ -24,26 +23,21 @@ jobs:
         git checkout -b "${BRANCH_NAME}"
         git add *
         git commit -m "Auto update at ${TIMESTAMP}"
-        echo "::set-output name=BRANCH_NAME::${BRANCH_NAME}"
-        echo "::set-output name=TIMESTAMP::${TIMESTAMP}"
-      outputs:
-        BRANCH_NAME:
-          description: 'The branch name for push'
-        TIMESTAMP:
-          description: 'The timestamp'
+        echo "::set-env name=BRANCH_NAME::${BRANCH_NAME}"
+        echo "::set-env name=TIMESTAMP::${TIMESTAMP}"
 
     - name: Push Changes
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
-        branch: ${{ steps.commit_files.outputs.BRANCH_NAME }}
+        branch: ${BRANCH_NAME}
     - name: Create pull request
       run: |
         REQUEST_BODY=$(cat << PULL_REQUEST
         {
-            "title": "Auto update at ${{ steps.commit_files.outputs.TIMESTAMP }}",
-            "body": "Update the modules at ${{ steps.commit_files.outputs.TIMESTAMP }}",
-            "head": "${{ steps.commit_files.outputs.BRANCH_NAME }}",
+            "title": "Auto update at ${TIMESTAMP}",
+            "body": "Update the modules at ${TIMESTAMP}",
+            "head": "${BRANCH_NAME }",
             "base": "master"
         }
         PULL_REQUEST
@@ -53,4 +47,6 @@ jobs:
             --header 'content-type: application/vnd.github.sailor-v-preview+json' \
             --header "authorization: bearer ${{ secrets.GITHUB_ACTIONS_TOKEN }}" \
             --data "${REQUEST_BODY}"
-
+      env:
+        BRANCH_NAME: ${BRANCH_NAME}
+        TIMESTAMP: ${TIMESTAMP}
