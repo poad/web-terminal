@@ -21,9 +21,6 @@ inputs:
   repository:
     description: target repository
     required: true
-outputs:
-  pull_request_url:
-    description: URL of url pull request was created.
 runs:
   using: 'docker'
   image: './Dockerfile'
