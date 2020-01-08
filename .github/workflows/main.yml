@@ -25,6 +25,11 @@ jobs:
         git commit -m "Auto update at ${TIMESTAMP}"
         echo "::set-env name=BRANCH_NAME::${BRANCH_NAME}"
         echo "::set-env name=TIMESTAMP::${TIMESTAMP}"
+    - name: Get Token Owner
+      if: success()
+      uses: ./.github/actions/get_token_owner
+      with:
+        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
     - name: Push Changes
       if: success()
       uses: ad-m/github-push-action@master
@@ -45,7 +50,7 @@ jobs:
       if: success()
       uses: ./.github/actions/assign_reviewer
       with:
-        pull_request_url: ${{ steps.auto_update.create_pull_request.outputs.pull_request_url }}
-        requested_reviewer: ${{ env.GITHUB_ACTOR }}
+        pull_request_url: ${{ env.PULL_REQUEST_URL }}
+        requested_reviewer: ${{ env.GITHUB_TOKEN_OWNER }}
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
-  
+
