@@ -1,4 +1,4 @@
-name: git-secrets action example
+name: Node.js modules auto update
  
 on:
   push:
