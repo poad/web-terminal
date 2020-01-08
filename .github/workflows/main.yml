@@ -25,11 +25,6 @@ jobs:
         git commit -m "Auto update at ${TIMESTAMP}"
         echo "::set-env name=BRANCH_NAME::${BRANCH_NAME}"
         echo "::set-env name=TIMESTAMP::${TIMESTAMP}"
-    - name: Get Token Owner
-      if: success()
-      uses: ./.github/actions/get_token_owner
-      with:
-        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
     - name: Push Changes
       if: success()
       uses: ad-m/github-push-action@master
@@ -37,7 +32,6 @@ jobs:
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
         branch: ${{ env.BRANCH_NAME }}
     - name: Create pull request
-      id: create_pull_request
       if: success()
       uses: ./.github/actions/create_pull_request
       with:
@@ -46,11 +40,9 @@ jobs:
         body: ${{ format('Update the modules at {0}', env.TIMESTAMP) }}
         github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
         repository: ${{ github.repository }}
-    - name: Assign to pull request
+    - name: Create pull request
       if: success()
-      uses: ./.github/actions/assign_reviewer
+      uses: ./.github/actions/slack_notificator
       with:
-        pull_request_url: ${{ env.PULL_REQUEST_URL }}
-        requested_reviewer: ${{ env.GITHUB_TOKEN_OWNER }}
-        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
-
+        webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+        text: '${{ github.workflow }}: ${{ job.status }}\nPull Request: ${{ env.PULL_REQUEST_URL }}'
