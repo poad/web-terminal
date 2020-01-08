@@ -21,7 +21,9 @@ if [ $? -ne 0 ]; then
     exit ${ret}
 fi
 
-PULL_REQUEST_URL=$(echo ${RESPONSE} | jq -c ".url")
+PULL_REQUEST_URL=$(echo ${RESPONSE} | jq -r ".url")
+PULL_REQUEST_HTML_URL=$(echo ${RESPONSE} | jq -r ".html_url")
 echo "::set-env name=PULL_REQUEST_URL::${PULL_REQUEST_URL}"
+echo "::set-env name=PULL_REQUEST_HTML_URL::${PULL_REQUEST_HTML_URL}"
 
 exit $?
