@@ -27,15 +27,33 @@ RUN apt-get update -qq \
 RUN ln -s /usr/bin/clang-9 /usr/bin/gcc \
  && ln -s /usr/bin/clang-9 /usr/bin/cc
 
-COPY --chown=node:node --from=downloader /tmp/rustup.rs /tmp/rustup.rs
-
 USER node
 
 ENV CC=clang-9 \
     CXX=clang++-9
 
+USER root
+
+RUN apt-get update -qq \
+ && apt-get install -qqy --no-install-recommends curl \
+ && apt-get clean -qq \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
+COPY --chown=node:node --from=downloader /tmp/rustup.rs /tmp/rustup.rs
+
+USER node
+
 RUN chmod 744 /tmp/rustup.rs \
  && /tmp/rustup.rs -y
+
+USER root
+
+RUN apt-get update -qq \
+ && apt-get autoremove --purge -qqy curl \
+ && apt-get clean -qq \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
+USER node
 
 ENV PATH=/home/node/.cargo/bin:${PATH}
 
