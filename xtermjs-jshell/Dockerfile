@@ -34,7 +34,8 @@ RUN apk add --no-cache --virtual .build-deps \
     xz 
 
 WORKDIR /tmp
-RUN wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
+RUN curl -sL https://apt.llvm.org/llvm-snapshot.gpg.key > /tmp/llvm-snapshot.gpg.key \
+ && wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
  && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
  && set -ex \
  \
@@ -74,6 +75,7 @@ ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/
     CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr" \
     PATH=/usr/local/python/bin:/usr/local/bin:$PATH
 
+COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
 ARG DEPENDENCIES="\
         autoconf \
@@ -124,7 +126,7 @@ ARG DEPENDENCIES="\
 RUN apt-get update -qq \
  && apt-get autoremove --purge -qqy gcc \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
- && curl -sL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+ && apt-key add /tmp/llvm-snapshot.gpg.key \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
@@ -179,6 +181,7 @@ ENV LANG=C.UTF-8 \
 
 COPY --from=python /usr/local/python /usr/local
 COPY --from=downloader /tmp/get-pip.py /tmp/get-pip.py
+COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
 # make some useful symlinks that are expected to exist
 RUN cd /usr/local/bin \
@@ -191,7 +194,7 @@ RUN cd /usr/local/bin \
 RUN apt-get update -qq \
  && apt-get autoremove --purge -qqy gcc \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
- && curl -sL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+ && apt-key add /tmp/llvm-snapshot.gpg.key \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \

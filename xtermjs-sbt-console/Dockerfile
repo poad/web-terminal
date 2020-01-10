@@ -13,15 +13,11 @@ ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ARG SBT_VERSION="1.3.6"
 ARG SBT_HOME=/usr/local/sbt
 
-FROM buildpack-deps:bionic-curl AS sbt
-
-ARG SBT_VERSION
-
-RUN curl -sL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp
-
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
 
 FROM alpine:latest AS downloader
+
+ARG SBT_VERSION
 
 ARG PYTHON_XZ_GPG_KEY
 ARG PYTHON_VERSION
@@ -42,7 +38,9 @@ RUN apk add --no-cache --virtual .build-deps \
     xz 
 
 WORKDIR /tmp
-RUN wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
+RUN curl -sSL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp \
+ && curl -sSL https://apt.llvm.org/llvm-snapshot.gpg.key > /tmp/llvm-snapshot.gpg.key\
+ && wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
  && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
  && set -ex \
  \
@@ -66,7 +64,7 @@ RUN wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
 
 
 
-FROM buildpack-deps:bionic-curl AS python
+FROM buildpack-deps:stable-curl AS python
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -82,6 +80,7 @@ ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/
     CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr" \
     PATH=/usr/local/python/bin:/usr/local/bin:$PATH
 
+COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
 ARG DEPENDENCIES="\
         autoconf \
@@ -130,14 +129,14 @@ ARG DEPENDENCIES="\
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \
- && apt-get autoremove --purge -qqy gcc \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
- && curl -sL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+ && apt-key add /tmp/llvm-snapshot.gpg.key \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends ${DEPENDENCIES} \
+ && apt-get autoremove --purge -qqy gcc \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
@@ -195,11 +194,13 @@ RUN cd /usr/local/bin \
 	&& ln -s python3 python \
 	&& ln -s python3-config python-config
 
+COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
+
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \
  && apt-get autoremove --purge -qqy gcc \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
- && curl -sL https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+ && apt-key add /tmp/llvm-snapshot.gpg.key \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
@@ -242,7 +243,7 @@ ENV SBT_HOME=${SBT_HOME} \
 
 USER root
 
-COPY --from=sbt /tmp/sbt ${SBT_HOME}
+COPY --from=downloader /tmp/sbt ${SBT_HOME}
 
 USER node
 

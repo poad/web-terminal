@@ -183,7 +183,7 @@ RUN cd /usr/local/bin \
 	&& ln -s python3 python \
 	&& ln -s python3-config python-config
 
-COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
+COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \
@@ -200,6 +200,7 @@ RUN apt-get update -qq \
         make \
 		clang-9 \
 		lld-9 \
+		curl \
  && ldconfig \
  && python /tmp/get-pip.py \
 		--disable-pip-version-check \
