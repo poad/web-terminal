@@ -13,7 +13,7 @@ fi
 DOCKER_CONTENT_TRUST=1
 
 docker build --build-arg BASE_TAG=${DOCKER_TAG} \
-    --build-arg SBT_VERSION="1.3.6" \
+    --build-arg SBT_VERSION="1.3.7" \
     ${DOCKERFILE_PATH_ARG} -t $IMAGE_NAME .
 
 echo "------ HOOK END - BUILD -------"
