@@ -1,4 +1,4 @@
-ARG JAVA_VERSION="11.0.5_10"
+ARG JAVA_VERSION="11.0.6_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 
 
