@@ -14,7 +14,7 @@ DOCKER_CONTENT_TRUST=1
 
 docker build --build-arg BASE_TAG=${DOCKER_TAG} \
     --build-arg BASE_IMAGE="lts-buster-slim" \
-    --build-arg SBT_VERSION="1.3.7" \
+    --build-arg SBT_VERSION="1.3.8" \
     --build-arg JAVA_VERSION="11.0.6_10" \
     --build-arg PYTHON_VERSION="3.8.1" \
     --build-arg PYTHON_PIP_VERSION="20.0.2" \
