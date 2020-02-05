@@ -10,7 +10,7 @@ ARG PYTHON_GET_PIP_SHA256="da288fc002d0bb2b90f6fbabc91048c1fa18d567ad067ee713c6e
 
 ARG JAVA_VERSION="11.0.6_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
-ARG SBT_VERSION="1.3.7"
+ARG SBT_VERSION="1.3.8"
 ARG SBT_HOME=/usr/local/sbt
 
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
