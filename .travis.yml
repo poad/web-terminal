@@ -1,0 +1,23 @@
+language: generic
+
+services:
+  - docker
+  
+env:
+  matrix:
+    - DIR=base
+    - DIR=jshell
+    - DIR=rust
+    - DIR=sbt-console
+    - DIR=xtermjs
+    - DIR=xtermjs-rust
+    - DIR=xtermjs-jshell
+    - DIR=xtermjs-sbt-console
+
+
+script:
+  - CUR=$(pwd) &&
+    cd ${DIR} &&
+    if [ "$TRAVIS_PULL_REQUEST" == "true" ]; then bash docker build --rm .; fi &&
+    cd ${CUR}
+  
