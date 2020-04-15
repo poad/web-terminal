@@ -8,9 +8,9 @@ ARG PIP_DOWNLOAD_HASH="42ad3426cb1ef05863521d7988d5f7fec0c99560"
 ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
 ARG PYTHON_GET_PIP_SHA256="da288fc002d0bb2b90f6fbabc91048c1fa18d567ad067ee713c6e331d3a32b45"
 
-ARG JAVA_VERSION="11.0.6_10"
+ARG JAVA_VERSION="11.0.7_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
-ARG SBT_VERSION="1.3.9"
+ARG SBT_VERSION="1.3.10"
 ARG SBT_HOME=/usr/local/sbt
 
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
