@@ -34,7 +34,7 @@ jobs:
       if: success() && env.CHANGE_STATE == 'changed'
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+        github_token: ${{ secrets.PERSONAL_TOKEN_FOR_GITHUB_ACTIONS }}
         branch: ${{ env.BRANCH_NAME }}
     - name: Create pull request
       if: success() && env.CHANGE_STATE == 'changed'
@@ -43,7 +43,7 @@ jobs:
         branch_name: ${{ env.BRANCH_NAME }}
         title: ${{ format('Auto update at {0}', env.TIMESTAMP) }}
         body: ${{ format('Update the modules at {0}', env.TIMESTAMP) }}
-        github_token: ${{ secrets.GITHUB_ACTIONS_TOKEN }}
+        github_token: ${{ secrets.PERSONAL_TOKEN_FOR_GITHUB_ACTIONS }}
         repository: ${{ github.repository }}
     - name: Send result with Pull Request
       if: success() && env.CHANGE_STATE == 'changed'
