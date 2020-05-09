@@ -18,6 +18,17 @@ env:
 script:
   - CUR=$(pwd) &&
     cd ${DIR} &&
-    if [ "$TRAVIS_PULL_REQUEST" == "true" ]; then bash docker build --rm .; fi &&
+    if [ "$TRAVIS_PULL_REQUEST" == "true" ]; then bash docker build --rm -t ${DOCKER_USERNAME}/web-terminal:${DIR} .; fi &&
     cd ${CUR}
+jobs:
+  include:
+    - stage: build
+    - stage: deploy
+      branches:
+        only:
+          - master
+      if: branch = master
+      script:
+        - echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin && docker push ${DOCKER_USERNAME}/web-terminal:${DIR}
+
   
