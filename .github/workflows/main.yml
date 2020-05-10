@@ -89,9 +89,9 @@ jobs:
         dir: ['base', 'jshell', 'rust', 'sbt-console', 'xtermjs', 'xtermjs-rust', 'xtermjs-jshell', 'xtermjs-sbt-console']
     steps:
     - uses: actions/checkout@master
-      if: github.event_name == 'pull_request' && github.event_name != 'schedule' && env.CHANGE_STATE != 'changed'
-    - name: Build ${{ matrix.dir }}
-      if: github.event_name == 'pull_request' && github.event_name != 'schedule' && env.CHANGE_STATE != 'changed'
+      if: github.event_name != 'pull_request' && github.event_name != 'schedule' && env.CHANGE_STATE != 'changed'
+    - name: Build ${{ matrix.dir }} and push
+      if: github.event_name != 'pull_request' && github.event_name != 'schedule' && env.CHANGE_STATE != 'changed'
       run: |
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u poad --password-stdin && \
         CUR=$(pwd) && \
