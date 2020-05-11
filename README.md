@@ -1,4 +1,4 @@
-[![](https://github.com/poad/web-terminal/workflows/.github/workflows/main.yml/badge.svg)](https://github.com/poad/web-terminal/actions)
+[![](https://github.com/poad/web-terminal/workflows/Node.js%20modules%20auto%20update%20and%20Docker%20Image%20push/badge.svg?branch=master&event=push)](https://github.com/poad/web-terminal/actions?query=branch%3Amaster+event%3Apush)
 
 # About
 
