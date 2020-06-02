@@ -1,4 +1,4 @@
-ARG SBT_VERSION="1.3.10"
+ARG SBT_VERSION="1.3.12"
 ARG SBT_HOME=/usr/local/sbt
 
 FROM buildpack-deps:bionic-curl AS sbt
