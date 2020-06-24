@@ -48,7 +48,7 @@
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.2.tgz#857a118d8634c84bba7ae14088e4508490cd5da5"
   integrity sha512-4kPlzbljFcsttWEq6aBW0OZe6BDajAmyvr2xknBG92tejQnvdGtT9+kXSZ580DqpxY9qG2xeQVF9Dq0ymUTo5Q==
 
-"@types/node@*", "@types/node@^14.0.12":
+"@types/node@*", "@types/node@^14.0.14":
   version "14.0.14"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.14.tgz#24a0b5959f16ac141aeb0c5b3cd7a15b7c64cbce"
   integrity sha512-syUgf67ZQpaJj01/tRTknkMNoBBLWJOBODF0Zm4NrXmiSuxjymFrxnTu1QVYRubhVkRcZLYZG8STTwJRdVm/WQ==
@@ -2837,7 +2837,7 @@ toidentifier@1.0.0:
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.0.tgz#7e1be3470f1e77948bc43d94a3c8f4d7752ba553"
   integrity sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
 
-ts-loader@^7.0.3:
+ts-loader@^7.0.5:
   version "7.0.5"
   resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-7.0.5.tgz#789338fb01cb5dc0a33c54e50558b34a73c9c4c5"
   integrity sha512-zXypEIT6k3oTc+OZNx/cqElrsbBtYqDknf48OZos0NQ3RTt045fBIU8RRSu+suObBzYB355aIPGOe/3kj9h7Ig==
@@ -3005,7 +3005,7 @@ watchpack@^1.6.1:
     chokidar "^3.4.0"
     watchpack-chokidar2 "^2.0.0"
 
-webpack-cli@^3.3.11:
+webpack-cli@^3.3.12:
   version "3.3.12"
   resolved "https://registry.yarnpkg.com/webpack-cli/-/webpack-cli-3.3.12.tgz#94e9ada081453cd0aa609c99e500012fd3ad2d4a"
   integrity sha512-NVWBaz9k839ZH/sinurM+HcDvJOTXwSjYp1ku+5XKeOC03z8v5QitnK/x+lAxGXFyhdayoIf/GOpv85z3/xPag==
@@ -3129,7 +3129,7 @@ xterm-addon-web-links@^0.4.0:
   resolved "https://registry.yarnpkg.com/xterm-addon-web-links/-/xterm-addon-web-links-0.4.0.tgz#265cbf8221b9b315d0a748e1323bee331cd5da03"
   integrity sha512-xv8GeiINmx0zENO9hf5k+5bnkaE8mRzF+OBAr9WeFq2eLaQSudioQSiT34M1ofKbzcdjSsKiZm19Rw3i4eXamg==
 
-xterm@^4.6.0:
+xterm@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.7.0.tgz#254485811146b03fbea10c911f7f68a99e1d3bfd"
   integrity sha512-UeH6U/1iknCBP94/AcKAFBeQz6ZicMugJHGXruTmsY8RcZt+mkx+vl8jLLOqNYweXdBbywCg2kK88WDKjcmSmg==
