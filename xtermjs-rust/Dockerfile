@@ -1,7 +1,7 @@
 ARG BASE_IMAGE="lts-buster-slim"
 
 ARG PYTHON_XZ_GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568"
-ARG PYTHON_VERSION="3.8.3"
+ARG PYTHON_VERSION="3.8.4"
 ARG PYTHON_PIP_VERSION="20.1.1"
 # https://github.com/pypa/get-pip
 ARG PIP_DOWNLOAD_HASH="eff16c878c7fd6b688b9b4c4267695cf1a0bf01b"
@@ -69,8 +69,8 @@ ENV LANG=C.UTF-8 \
 
 ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/usr/local/opt/openssl/include" \
     LDFLAGS="-L/usr/local/lib -L/usr/local/opt/openssl/lib" \
-    CC="/usr/bin/clang-9 -O5 -fsanitize=undefined" \
-    CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr" \
+    CC="/usr/bin/clang-10 -O5 -fsanitize=undefined" \
+    CXX="clang++-10 -O5 -fsanitize=undefined -fno-sanitize=vptr" \
     PATH=/usr/local/python/bin:/usr/local/bin:$PATH
 
 
@@ -81,8 +81,8 @@ ARG DEPENDENCIES="\
 		dpkg-dev \
 		file \
 		git \
-		clang-9 \
-		lld-9 \
+		clang-10 \
+		lld-10 \
 		imagemagick \
 		libbz2-dev \
 		libc6-dev \
@@ -127,8 +127,7 @@ RUN apt-get update -qq \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
  && cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends ${DEPENDENCIES} \
  && apt-get clean \
@@ -191,15 +190,14 @@ RUN apt-get update -qq \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
  && cat /tmp/llvm-snapshot.gpg.key | apt-key add - \
  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
       	libssl1.1 \
         make \
-		clang-9 \
-		lld-9 \
+		clang-10 \
+		lld-10 \
 		curl \
  && ldconfig \
  && python /tmp/get-pip.py \
@@ -208,15 +206,15 @@ RUN apt-get update -qq \
 		"pip==${PYTHON_PIP_VERSION}" \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog \
- && ln -s /usr/bin/clang-9 /usr/bin/gcc \
- && ln -s /usr/bin/clang-9 /usr/bin/cc \
- && ln -s /usr/bin/clang++-9 /usr/bin/g++ \
- && ln -s /usr/bin/clang++-9 /usr/bin/c++
+ && ln -s /usr/bin/clang-10 /usr/bin/gcc \
+ && ln -s /usr/bin/clang-10 /usr/bin/cc \
+ && ln -s /usr/bin/clang++-10 /usr/bin/g++ \
+ && ln -s /usr/bin/clang++-10 /usr/bin/c++
 
 ENV CPPFLAGS="" \
     LDFLAGS="" \
-    CC="clang-9 " \
-    CXX="clang++-9"
+    CC="clang-10" \
+    CXX="clang++-10"
 
 USER node
 
