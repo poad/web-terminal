@@ -8,7 +8,7 @@ ARG PIP_DOWNLOAD_HASH="eff16c878c7fd6b688b9b4c4267695cf1a0bf01b"
 ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
 ARG PYTHON_GET_PIP_SHA256="b3153ec0cf7b7bbf9556932aa37e4981c35dc2a2c501d70d91d2795aa532be79"
 
-ARG JAVA_VERSION="11.0.7_10"
+ARG JAVA_VERSION="11.0.8_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
