@@ -16,11 +16,11 @@ docker build --build-arg BASE_TAG=${DOCKER_TAG} \
     --build-arg BASE_IMAGE="lts-buster-slim" \
     --build-arg SBT_VERSION="1.3.13" \
     --build-arg JAVA_VERSION="11.0.8_10" \
-    --build-arg PYTHON_VERSION="3.8.4" \
-    --build-arg PYTHON_PIP_VERSION="20.1.1" \
+    --build-arg PYTHON_VERSION="3.8.5" \
+    --build-arg PYTHON_PIP_VERSION="20.2" \
     --build-arg PYTHON_XZ_GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568" \
-    --build-arg PIP_DOWNLOAD_HASH="eff16c878c7fd6b688b9b4c4267695cf1a0bf01b" \
-    --build-arg PYTHON_GET_PIP_SHA256="b3153ec0cf7b7bbf9556932aa37e4981c35dc2a2c501d70d91d2795aa532be79" \
+    --build-arg PIP_DOWNLOAD_HASH="cb5b85a8e0c3d13ced611b97816d7490d2f1497e" \
+    --build-arg PYTHON_GET_PIP_SHA256="a30ff8a3446c592c6d70403a82483716e7b759e8eecba2c8d3f6ecfb34a8d6d7" \
     ${DOCKERFILE_PATH_ARG} -t $IMAGE_NAME .
 
 echo "------ HOOK END - BUILD -------"
