@@ -8,7 +8,7 @@ ARG PIP_DOWNLOAD_HASH="cb5b85a8e0c3d13ced611b97816d7490d2f1497e"
 ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
 ARG PYTHON_GET_PIP_SHA256="a30ff8a3446c592c6d70403a82483716e7b759e8eecba2c8d3f6ecfb34a8d6d7"
 
-FROM alpine:latest AS downloader
+FROM alpine:3 AS downloader
 
 ARG PYTHON_XZ_GPG_KEY
 ARG PYTHON_VERSION
@@ -29,17 +29,15 @@ RUN apk add --no-cache --virtual .build-deps \
     xz 
 
 WORKDIR /tmp
-RUN curl -sSL https://apt.llvm.org/llvm-snapshot.gpg.key > /tmp/llvm-snapshot.gpg.key \ 
- && wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
+RUN curl -sSLo /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key \ 
+ && curl -sSLo get-pip.py "${PYTHON_GET_PIP_URL}" \
  && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
  && set -ex \
  \
- && wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
- && wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
+ && curl -sSLo python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
+ && curl -sSLo python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
  && export GNUPGHOME="$(mktemp -d)" \
- && for key in \
-    "${PYTHON_XZ_GPG_KEY}" \
- ; do \
+ && for key in "${PYTHON_XZ_GPG_KEY}" ; do \
    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "${key}" || \
    gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "${key}" || \
    gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "${key}" ; \
@@ -174,11 +172,11 @@ COPY --from=downloader /tmp/get-pip.py /tmp/get-pip.py
 COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
 # make some useful symlinks that are expected to exist
-RUN cd /usr/local/bin \
-	&& ln -s idle3 idle \
-	&& ln -s pydoc3 pydoc \
-	&& ln -s python3 python \
-	&& ln -s python3-config python-config
+WORKDIR /usr/local/bin
+RUN ln -s idle3 idle \
+ && ln -s pydoc3 pydoc \
+ && ln -s python3 python \
+ && ln -s python3-config python-config
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \

@@ -18,10 +18,10 @@ USER root
 
 COPY --from=jdk ${JAVA_HOME} ${JAVA_HOME}
 
-RUN for tool_path in ${JAVA_HOME}/bin/*; do \
-          tool=`basename $tool_path` \
-       && update-alternatives --install /usr/bin/$tool $tool $tool_path 10000 \
-       && update-alternatives --set $tool $tool_path; \
+RUN for tool_path in "${JAVA_HOME}"/bin/*; do \
+          tool=$(basename "$tool_path") \
+       && update-alternatives --install "/usr/bin/$tool" "$tool" "$tool_path" 10000 \
+       && update-alternatives --set "$tool" "$tool_path"; \
     done
 
 
