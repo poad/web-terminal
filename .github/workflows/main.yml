@@ -81,7 +81,11 @@ jobs:
         cd ${{ matrix.dir }} && \
         docker build --rm -t "poad/web-terminal:${{ matrix.dir }}" . && \
         cd ${CUR}
-
+    - name: Hadolint
+      uses: brpaz/hadolint-action@master
+      with:
+        dockerfile: ${{ matrix.dir }}/Dockerfile
+  
   docker_push:
     runs-on: ubuntu-latest
     strategy:
