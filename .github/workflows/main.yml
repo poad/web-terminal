@@ -82,6 +82,7 @@ jobs:
         docker build --rm -t "poad/web-terminal:${{ matrix.dir }}" . && \
         cd ${CUR}
     - name: Hadolint
+      if: github.event_name == 'pull_request' && github.event_name != 'schedule'
       uses: brpaz/hadolint-action@master
       with:
         dockerfile: ${{ matrix.dir }}/Dockerfile
