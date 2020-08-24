@@ -8,7 +8,7 @@ CUR=$(pwd)
 
 for target in $(ls -d xterm*)
 do
-  cd ${CUR}/${target}
+  cd ${CUR}/${target}/assets/webshell
     # parse package.json
   dev_modules=$(echo -n $(cat package.json | jq -r ".devDependencies | to_entries | .[].key"))
   echo ${dev_modules}
@@ -19,7 +19,5 @@ do
   yarn add ${modules}  yarn upgrade
 
   yarn install
-  cd assets/webshell
   yarn upgrade
-  yarn install
 done
