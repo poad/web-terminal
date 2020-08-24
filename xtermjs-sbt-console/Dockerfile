@@ -15,7 +15,7 @@ ARG SBT_HOME=/usr/local/sbt
 
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
 
-FROM alpine:latest AS downloader
+FROM alpine:3 AS downloader
 
 ARG SBT_VERSION
 
@@ -40,16 +40,14 @@ RUN apk add --no-cache --virtual .build-deps \
 WORKDIR /tmp
 RUN curl -sSL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp \
  && curl -sSL https://apt.llvm.org/llvm-snapshot.gpg.key > /tmp/llvm-snapshot.gpg.key\
- && wget -O get-pip.py "${PYTHON_GET_PIP_URL}" \
+ && curl -sSLo get-pip.py "${PYTHON_GET_PIP_URL}" \
  && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
  && set -ex \
  \
- && wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
- && wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
+ && curl -sSLo python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
+ && curl -sSLo python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
  && export GNUPGHOME="$(mktemp -d)" \
- && for key in \
-    "${PYTHON_XZ_GPG_KEY}" \
- ; do \
+ && for key in "${PYTHON_XZ_GPG_KEY}" ; do \
    gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "${key}" || \
    gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "${key}" || \
    gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "${key}" ; \
@@ -188,11 +186,11 @@ COPY --from=python /usr/local/python /usr/local
 COPY --from=downloader /tmp/get-pip.py /tmp/get-pip.py
 
 # make some useful symlinks that are expected to exist
-RUN cd /usr/local/bin \
-	&& ln -s idle3 idle \
-	&& ln -s pydoc3 pydoc \
-	&& ln -s python3 python \
-	&& ln -s python3-config python-config
+WORKDIR /usr/local/bin
+RUN ln -s idle3 idle \
+ && ln -s pydoc3 pydoc \
+ && ln -s python3 python \
+ && ln -s python3-config python-config
 
 COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
@@ -230,10 +228,10 @@ ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/
 
 COPY --from=jdk ${JAVA_HOME} ${JAVA_HOME}
 
-RUN for tool_path in ${JAVA_HOME}/bin/*; do \
-          tool=`basename $tool_path` \
-       && update-alternatives --install /usr/bin/$tool $tool $tool_path 10000 \
-       && update-alternatives --set $tool $tool_path; \
+RUN for tool_path in "${JAVA_HOME}"/bin/*; do \
+          tool=$(basename $tool_path) \
+       && update-alternatives --install /usr/bin/$tool "$tool" "$tool_path" 10000 \
+       && update-alternatives --set "$tool" "$tool_path"; \
     done
 
 ARG SBT_HOME
