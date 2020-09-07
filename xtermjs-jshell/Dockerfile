@@ -1,12 +1,10 @@
 ARG BASE_IMAGE="lts-buster-slim"
 
-ARG PYTHON_XZ_GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568"
-ARG PYTHON_VERSION="3.8.5"
-ARG PYTHON_PIP_VERSION="20.2"
+ARG PYTHON_PIP_VERSION="20.2.2"
 # https://github.com/pypa/get-pip
-ARG PIP_DOWNLOAD_HASH="cb5b85a8e0c3d13ced611b97816d7490d2f1497e"
+ARG PIP_DOWNLOAD_HASH="2739acb7ffe6814449fa80ffec68604ca48aa59d"
 ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
-ARG PYTHON_GET_PIP_SHA256="a30ff8a3446c592c6d70403a82483716e7b759e8eecba2c8d3f6ecfb34a8d6d7"
+ARG PYTHON_GET_PIP_SHA256="d4d62a0850fe0c2e6325b2cc20d818c580563de5a2038f917e3cb0e25280b4d1"
 
 ARG JAVA_VERSION="11.0.8_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
@@ -14,9 +12,6 @@ ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
 
 FROM alpine:3 AS downloader
-
-ARG PYTHON_XZ_GPG_KEY
-ARG PYTHON_VERSION
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ARG PYTHON_PIP_VERSION
@@ -36,126 +31,7 @@ RUN apk add --no-cache --virtual .build-deps \
 WORKDIR /tmp
 RUN curl -sSLo /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key \
  && curl -sSLo get-pip.py "${PYTHON_GET_PIP_URL}" \
- && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
- && set -ex \
- \
- && curl -sSLo python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
- && curl -sSLo python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
- && export GNUPGHOME="$(mktemp -d)" \
- && for key in "${PYTHON_XZ_GPG_KEY}"; do \
-   gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "${key}" || \
-   gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "${key}" || \
-   gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "${key}" ; \
- done \
- && gpg --batch --verify python.tar.xz.asc python.tar.xz \
- && { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
- && rm -rf "${GNUPGHOME}" python.tar.xz.asc \
- && mkdir -p /usr/src/python \
- && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
- && rm python.tar.xz \
- && mkdir -p /usr/local/python
-
-
-
-FROM buildpack-deps:bionic-curl AS python
-
-# ensure local python is preferred over distribution python
-ENV PATH /usr/local/bin:$PATH
-
-# http://bugs.python.org/issue19846
-# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
-ENV LANG=C.UTF-8 \
-    DEBIAN_FRONTEND=noninteractive
-
-ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/usr/local/opt/openssl/include" \
-    LDFLAGS="-L/usr/local/lib -L/usr/local/opt/openssl/lib" \
-    CC="/usr/bin/clang-9 -O5 -fsanitize=undefined" \
-    CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr" \
-    PATH=/usr/local/python/bin:/usr/local/bin:$PATH
-
-COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
-
-ARG DEPENDENCIES="\
-        autoconf \
-		automake \
-		bzip2 \
-		dpkg-dev \
-		file \
-		git \
-		clang-9 \
-		lld-9 \
-		imagemagick \
-		libbz2-dev \
-		libc6-dev \
-		libcurl4-openssl-dev \
-		libdb-dev \
-		libevent-dev \
-		libffi-dev \
-		libgdbm-dev \
-		libglib2.0-dev \
-		libgmp-dev \
-		libjpeg-dev \
-		libkrb5-dev \
-		liblzma-dev \
-		libmagickcore-dev \
-		libmagickwand-dev \
-		libmaxminddb-dev \
-		libncurses5-dev \
-		libncursesw5-dev \
-		libpng-dev \
-		libpq-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		libtool \
-		libwebp-dev \
-		libxml2-dev \
-		libxslt-dev \
-		libyaml-dev \
-		make \
-		patch \
-		unzip \
-		xz-utils \
-		zlib1g-dev \
-		tk-dev \
-		uuid-dev"
-
-# extra dependencies (over what buildpack-deps already includes)
-RUN apt-get update -qq \
- && apt-get autoremove --purge -qqy gcc \
- && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
- && apt-key add /tmp/llvm-snapshot.gpg.key \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && apt-get update -qq \
- && apt-get install -qqy --no-install-recommends ${DEPENDENCIES} \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
-COPY --from=downloader /usr/src/python /usr/src/python
-WORKDIR /usr/src/python
-
-RUN gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
- && ./configure \
-      --build="$gnuArch" \
-      --enable-loadable-sqlite-extensions \
-      --with-system-expat \
-      --with-system-ffi \
-      --without-ensurepip \
-      --prefix=/usr/local/python \
- && make -j "$(nproc)" \
- && make install \
- \
- && find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' + \
- && rm -rf /usr/src/python \
- \
- && python3 --version
+ && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c -
 
 
 FROM node:${BASE_IMAGE}
@@ -172,53 +48,39 @@ USER root
 
 ARG PYTHON_PIP_VERSION
 
-ENV PATH=/usr/local/bin:${PATH}
 
 ENV LANG=C.UTF-8 \
     DEBIAN_FRONTEND=noninteractive
 
-COPY --from=python /usr/local/python /usr/local
 COPY --from=downloader /tmp/get-pip.py /tmp/get-pip.py
-COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
-
-# make some useful symlinks that are expected to exist
-WORKDIR /usr/local/bin
-RUN ln -s idle3 idle \
- && ln -s pydoc3 pydoc \
- && ln -s python3 python \
- && ln -s python3-config python-config
+COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \
- && apt-get autoremove --purge -qqy gcc \
- && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
+ && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
+ && add-apt-repository ppa:deadsnakes/ppa -y \
  && apt-key add /tmp/llvm-snapshot.gpg.key \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
       	libssl1.1 \
         make \
-		clang-9 \
-		lld-9 \
- && ldconfig \
+		clang-10 \
+		lld-10 \
+		python3.8 \
  && python /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==${PYTHON_PIP_VERSION}" \
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog \
- && ln -s /usr/bin/clang-9 /usr/bin/gcc \
- && ln -s /usr/bin/clang-9 /usr/bin/cc \
- && ln -s /usr/bin/clang++-9 /usr/bin/g++ \
- && ln -s /usr/bin/clang++-9 /usr/bin/c++
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
 
 ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/usr/local/opt/openssl/include" \
     LDFLAGS="-L/usr/local/lib -L/usr/local/opt/openssl/lib" \
-    CC="/usr/bin/clang-9 -O5 -fsanitize=undefined" \
-    CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr"
+    CC="/usr/bin/clang-10 -O5 -fsanitize=undefined" \
+    CXX="clang++-10 -O5 -fsanitize=undefined -fno-sanitize=vptr"
 
 COPY --from=jdk ${JAVA_HOME} ${JAVA_HOME}
 
