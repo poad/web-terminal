@@ -13,10 +13,15 @@ fi
 DOCKER_CONTENT_TRUST=1
 
 docker build --build-arg BASE_TAG=${DOCKER_TAG} \
-    --build-arg BASE_IMAGE="lts-buster-slim" \
+    --build-arg BASE_IMAGE="bionic" \
+    --build-arg SBT_VERSION="1.3.13" \
+    --build-arg JAVA_VERSION="11.0.8_10" \
     --build-arg PYTHON_PIP_VERSION="20.2.2" \
-    --build-arg PIP_DOWNLOAD_HASH="2739acb7ffe6814449fa80ffec68604ca48aa59d" \
+    --build-arg PIP_DOWNLOAD_HASH="cb5b85a8e0c3d13ced611b97816d7490d2f1497e" \
     --build-arg PYTHON_GET_PIP_SHA256="d4d62a0850fe0c2e6325b2cc20d818c580563de5a2038f917e3cb0e25280b4d1" \
+    --build-arg SWIFT_VERSION="5.2.5" \
+    --build-arg SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561" \
+    --build-arg SWIFT_PLATFORM="ubuntu18.04" \
     ${DOCKERFILE_PATH_ARG} -t $IMAGE_NAME .
 
 echo "------ HOOK END - BUILD -------"
