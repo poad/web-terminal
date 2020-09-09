@@ -6,9 +6,9 @@ apt-get install -qqy --no-install-recommends \
 
 CUR=$(pwd)
 
-for target in $(ls -d xterm*)
+for target in $(ls -d xterm/assets/*)
 do
-  cd ${CUR}/${target}/assets/webshell
+  cd ${CUR}/${target}/webshell
     # parse package.json
   dev_modules=$(echo -n $(cat package.json | jq -r ".devDependencies | to_entries | .[].key"))
   echo ${dev_modules}

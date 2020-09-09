@@ -1,17 +1,23 @@
-ARG BASE_IMAGE="lts-buster-slim"
+ARG BASE_IMAGE="bionic"
 
-ARG PYTHON_XZ_GPG_KEY="E3FF2839C048B25C084DEBE9B26995E310250568"
-ARG PYTHON_VERSION="3.8.5"
-ARG PYTHON_PIP_VERSION="20.2"
+ARG PYTHON_PIP_VERSION="20.2.2"
 # https://github.com/pypa/get-pip
-ARG PIP_DOWNLOAD_HASH="cb5b85a8e0c3d13ced611b97816d7490d2f1497e"
+ARG PIP_DOWNLOAD_HASH="2739acb7ffe6814449fa80ffec68604ca48aa59d"
 ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
-ARG PYTHON_GET_PIP_SHA256="a30ff8a3446c592c6d70403a82483716e7b759e8eecba2c8d3f6ecfb34a8d6d7"
+ARG PYTHON_GET_PIP_SHA256="d4d62a0850fe0c2e6325b2cc20d818c580563de5a2038f917e3cb0e25280b4d1"
 
-FROM alpine:3 AS downloader
+ARG JAVA_VERSION="11.0.8_10"
+ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
+ARG SBT_VERSION="1.3.13"
+ARG SBT_HOME=/usr/local/sbt
 
-ARG PYTHON_XZ_GPG_KEY
-ARG PYTHON_VERSION
+ARG SWIFT_VERSION="5.2.5"
+ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
+ARG SWIFT_PLATFORM="ubuntu18.04"
+
+FROM poad/docker-openjdk:11-adopt-buster AS jdk
+
+FROM buildpack-deps:${BASE_IMAGE}-curl AS downloader
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ARG PYTHON_PIP_VERSION
@@ -19,211 +25,218 @@ ARG PYTHON_PIP_VERSION
 ARG PYTHON_GET_PIP_URL
 ARG PYTHON_GET_PIP_SHA256
 
+ARG SBT_VERSION
 
-ENV PATH=/usr/local/python/bin:$PATH \
-    JAVA_HOME=${JAVA_HOME}
+ARG SWIFT_VERSION
+ARG SWIFT_PLATFORM
+ARG SWIFT_SIGNING_KEY
 
-RUN apk add --no-cache --virtual .build-deps \
-    curl \
-    gnupg \
-    xz 
+ARG ARCHIVE_FILE="swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz"
+ARG DOWNLOAD_URL="https://swift.org/builds/swift-${SWIFT_VERSION}-release/ubuntu1804/swift-${SWIFT_VERSION}-RELEASE/${ARCHIVE_FILE}"
 
 WORKDIR /tmp
-RUN curl -sSLo /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key \ 
+RUN apt-get update -qq \
+ && apt-get install -qqy --no-install-recommends gnupg2 ca-certificates \
+ && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup.rs \
+ && curl -sSL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp \
+ && curl -sSLo /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key \
+ && curl -fsSL "$DOWNLOAD_URL" -o "/tmp/${ARCHIVE_FILE}" "${DOWNLOAD_URL}.sig" -o "/tmp/${ARCHIVE_FILE}.sig" \
  && curl -sSLo get-pip.py "${PYTHON_GET_PIP_URL}" \
  && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
- && set -ex \
- \
- && curl -sSLo python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz" \
- && curl -sSLo python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-${PYTHON_VERSION}.tar.xz.asc" \
  && export GNUPGHOME="$(mktemp -d)" \
- && for key in "${PYTHON_XZ_GPG_KEY}" ; do \
-   gpg --batch --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "${key}" || \
-   gpg --batch --keyserver hkp://ipv4.pool.sks-keyservers.net --recv-keys "${key}" || \
-   gpg --batch --keyserver hkp://pgp.mit.edu:80 --recv-keys "${key}" ; \
- done \
- && gpg --batch --verify python.tar.xz.asc python.tar.xz \
  && { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
- && rm -rf "${GNUPGHOME}" python.tar.xz.asc \
- && mkdir -p /usr/src/python \
- && tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
- && rm python.tar.xz \
- && mkdir -p /usr/local/python
+ && curl -sS https://swift.org/keys/all-keys.asc | gpg --import - \
+ && curl -sS https://swift.org/keys/release-key-swift-5.x.asc | gpg --import - \
+ && for keyserver in "ha.pool.sks-keyservers.net" "hkp://pool.sks-keyservers.net" "hkp://pgp.mit.edu:80"; do \
+        gpg --batch --quiet --keyserver "${keyserver}" --recv-keys "${SWIFT_SIGNING_KEY}" \
+     && gpg --keyserver "${keyserver}" --refresh-keys Swift \
+     && break;\
+    done \
+ ;  gpg --verify "/tmp/${ARCHIVE_FILE}.sig" \
+ && tar xf "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" \
+ && rm -rf "${GNUPGHOME}" "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" "/tmp/${ARCHIVE_FILE}.sig" \
+ && curl -sSLo /tmp/node_setup_12.x.sh https://deb.nodesource.com/setup_12.x
 
 
+FROM ubuntu:${BASE_IMAGE} AS base
 
-FROM buildpack-deps:bionic-curl AS python
-
-# ensure local python is preferred over distribution python
-ENV PATH /usr/local/bin:$PATH
-
-# http://bugs.python.org/issue19846
-# > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
-ENV LANG=C.UTF-8 \
-    DEBIAN_FRONTEND=noninteractive
-
-ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/usr/local/opt/openssl/include" \
-    LDFLAGS="-L/usr/local/lib -L/usr/local/opt/openssl/lib" \
-    CC="/usr/bin/clang-9 -O5 -fsanitize=undefined" \
-    CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr" \
-    PATH=/usr/local/python/bin:/usr/local/bin:$PATH
-
-COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
-
-ARG DEPENDENCIES="\
-        autoconf \
-		automake \
-		bzip2 \
-		dpkg-dev \
-		file \
-		git \
-		clang-9 \
-		lld-9 \
-		imagemagick \
-		libbz2-dev \
-		libc6-dev \
-		libcurl4-openssl-dev \
-		libdb-dev \
-		libevent-dev \
-		libffi-dev \
-		libgdbm-dev \
-		libglib2.0-dev \
-		libgmp-dev \
-		libjpeg-dev \
-		libkrb5-dev \
-		liblzma-dev \
-		libmagickcore-dev \
-		libmagickwand-dev \
-		libmaxminddb-dev \
-		libncurses5-dev \
-		libncursesw5-dev \
-		libpng-dev \
-		libpq-dev \
-		libreadline-dev \
-		libsqlite3-dev \
-		libssl-dev \
-		libtool \
-		libwebp-dev \
-		libxml2-dev \
-		libxslt-dev \
-		libyaml-dev \
-		make \
-		patch \
-		unzip \
-		xz-utils \
-		zlib1g-dev \
-		tk-dev \
-		uuid-dev"
-
-# extra dependencies (over what buildpack-deps already includes)
-RUN apt-get update -qq \
- && apt-get autoremove --purge -qqy gcc \
- && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
- && apt-key add /tmp/llvm-snapshot.gpg.key \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && apt-get update -qq \
- && apt-get install -qqy --no-install-recommends ${DEPENDENCIES} \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
-
-COPY --from=downloader /usr/src/python /usr/src/python
-WORKDIR /usr/src/python
-
-RUN gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
- && ./configure \
-      --build="$gnuArch" \
-      --enable-loadable-sqlite-extensions \
-      --with-system-expat \
-      --with-system-ffi \
-      --without-ensurepip \
-      --prefix=/usr/local/python \
- && make -j "$(nproc)" \
- && make install \
- \
- && find /usr/local -depth \
-		\( \
-			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-			-o \
-			\( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-		\) -exec rm -rf '{}' + \
- && rm -rf /usr/src/python \
- \
- && python3 --version
-
-
-FROM node:${BASE_IMAGE}
+LABEL maintainer="Kenji Saito<ken-yo@mbr.nifty.com>"
 
 USER root
-LABEL maintainer="Kenji Saito<ken-yo@mbr.nifty.com>"
 
 ARG PYTHON_PIP_VERSION
 
-USER root
-
-ENV PATH=/usr/local/bin:${PATH}
-
 ENV LANG=C.UTF-8 \
     DEBIAN_FRONTEND=noninteractive
 
-COPY --from=python /usr/local/python /usr/local
 COPY --from=downloader /tmp/get-pip.py /tmp/get-pip.py
-COPY --from=python /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
+COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
+COPY --from=downloader /tmp/node_setup_12.x.sh /tmp/node_setup_12.x.sh
 
 # make some useful symlinks that are expected to exist
 WORKDIR /usr/local/bin
-RUN ln -s idle3 idle \
- && ln -s pydoc3 pydoc \
- && ln -s python3 python \
- && ln -s python3-config python-config
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \
- && apt-get autoremove --purge -qqy gcc \
- && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils \
+ && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
+ && add-apt-repository ppa:deadsnakes/ppa -y \
  && apt-key add /tmp/llvm-snapshot.gpg.key \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-8 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && apt-get update -qq \
+ && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && cat /tmp/node_setup_12.x.sh | bash - \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
       	libssl1.1 \
         make \
-		clang-9 \
-		lld-9 \
- && ldconfig \
+		clang-10 \
+		lld-10 \
+		python3.8 \
+		libpython2.7 \
+		libncurses5 \
+		libxml2 \
+		nodejs \
+        gcc \
+        g++ \
+ && npm i -g yarn \
  && python /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==${PYTHON_PIP_VERSION}" \
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog \
- && ln -s /usr/bin/clang-9 /usr/bin/gcc \
- && ln -s /usr/bin/clang-9 /usr/bin/cc \
- && ln -s /usr/bin/clang++-9 /usr/bin/g++ \
- && ln -s /usr/bin/clang++-9 /usr/bin/c++
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
 
-ENV CPPFLAGS="-I/usr/local/opt/zlib/include -I/usr/local/opt/sqlite3/include -I/usr/local/opt/openssl/include" \
-    LDFLAGS="-L/usr/local/lib -L/usr/local/opt/openssl/lib" \
-    CC="/usr/bin/clang-9 -O5 -fsanitize=undefined" \
-    CXX="clang++-9 -O5 -fsanitize=undefined -fno-sanitize=vptr"
+
+RUN groupadd --gid 1000 node \
+  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node 
 
 USER node
 
-COPY --chown=node:node assets/webshell /home/node/webshell
-
-WORKDIR /home/node/webshell
-
-RUN yarn install
-
-RUN yarn run build
-RUN yarn run package
-
-RUN cp -pR node_modules static/ \
- && rm -rf src tsconfig.json webpack.config.js
+RUN mkdir -p /home/node/.yarn
 
 EXPOSE 3000
 
 CMD [ "yarn", "start" ]
+
+FROM base AS xtermjs
+
+COPY --chown=node:node assets/xtermjs/webshell /home/node/webshell
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js \
+ && chown -R node:node /home/node
+
+EXPOSE 3000
+
+CMD [ "yarn", "start" ]
+
+FROM base AS java-base
+
+ARG JAVA_VERSION
+ARG JAVA_HOME
+
+COPY --from=jdk ${JAVA_HOME} ${JAVA_HOME}
+
+ENV JAVA_HOME ${JAVA_HOME}
+ENV PATH "$JAVA_HOME/bin:$PATH"
+
+USER root
+
+RUN for tool_path in "${JAVA_HOME}"/bin/*; do \
+          tool=$(basename $tool_path) \
+       && update-alternatives --install /usr/bin/$tool "$tool" "$tool_path" 10000 \
+       && update-alternatives --set "$tool" "$tool_path"; \
+    done
+
+USER node
+
+FROM java-base AS sbt-console
+
+ARG SBT_HOME
+
+ENV SBT_HOME=${SBT_HOME} \
+    PATH="$SBT_HOME/bin:$PATH"
+
+USER root
+
+COPY --from=downloader /tmp/sbt ${SBT_HOME}
+
+RUN chown -R node:node /home/node 
+
+USER node
+
+RUN sbt compile clean
+
+RUN mkdir -p /home/node/sbt-console
+WORKDIR /home/node/sbt-console
+
+COPY --chown=node:node assets/sbt-console/webshell /home/node/webshell
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js
+
+
+FROM java-base AS jshell
+
+USER node
+
+COPY --chown=node:node assets/jshell/webshell /home/node/webshell
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js
+
+
+FROM base AS rust
+
+USER node
+
+COPY --chown=node:node --from=downloader /tmp/rustup.rs /tmp/rustup.rs
+COPY --chown=node:node assets/rust/webshell /home/node/webshell
+
+ENV PATH=/home/node/.cargo/bin:${PATH}
+
+WORKDIR /home/node/webshell
+
+RUN mkdir -p /home/node/.cargo \
+ && yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js \
+ && chmod 744 /tmp/rustup.rs \
+ && /tmp/rustup.rs -y \
+ && cargo install evcxr_repl
+
+
+FROM base AS swift
+
+ARG SWIFT_VERSION
+ARG SWIFT_PLATFORM
+
+USER node
+
+COPY --chown=node:node assets/swift/webshell /home/node/webshell
+COPY --from=downloader "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}" /opt/swift
+
+ENV PATH=/opt/swift/usr/bin:${PATH}
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js

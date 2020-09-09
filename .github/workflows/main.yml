@@ -70,37 +70,53 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dir: ['base', 'jshell', 'rust', 'sbt-console', 'xtermjs', 'xtermjs-rust', 'xtermjs-jshell', 'xtermjs-sbt-console']
+        target: [
+          'xtermjs',
+          'jshell',
+          'rust',
+          'sbt-console',
+          'swift'
+        ]
     steps:
     - uses: actions/checkout@master
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
-    - name: Build ${{ matrix.dir }}
+    - name: Build ${{ matrix.target }}
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
+      env:
+        DOCKER_BUILDKIT: 1
       run: |
         CUR=$(pwd) && \
-        cd ${{ matrix.dir }} && \
-        docker build --rm -t "poad/web-terminal:${{ matrix.dir }}" . && \
+        cd xtermjs && \
+        docker build --rm --target "${{ matrix.target }}" -t "poad/web-terminal:${{ matrix.target }}" . && \
         cd ${CUR}
     - name: Hadolint
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
       uses: brpaz/hadolint-action@master
       with:
-        dockerfile: ${{ matrix.dir }}/Dockerfile
+        dockerfile: xtermjs/Dockerfile
   
   docker_push:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dir: ['base', 'jshell', 'rust', 'sbt-console', 'xtermjs', 'xtermjs-rust', 'xtermjs-jshell', 'xtermjs-sbt-console']
+        target: [
+          'xtermjs',
+          'jshell',
+          'rust',
+          'sbt-console',
+          'swift'
+        ]
     steps:
     - uses: actions/checkout@master
       if: github.event_name != 'pull_request'
-    - name: Build ${{ matrix.dir }} and push
+    - name: Build ${{ matrix.target }} and push
       if: github.event_name != 'pull_request'
+      env:
+        DOCKER_BUILDKIT: 1
       run: |
         echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u poad --password-stdin && \
         CUR=$(pwd) && \
-        cd ${{ matrix.dir }} && \
-        docker build --rm -t "poad/web-terminal:${{ matrix.dir }}" . && \
-        docker push "poad/web-terminal:${{ matrix.dir }}" && \
+        cd xtermjs && \
+        docker build --rm --target "${{ matrix.target }}" -t "poad/web-terminal:${{ matrix.target }}" . && \
+        docker push "poad/web-terminal:${{ matrix.target }}" && \
         cd ${CUR}

@@ -10,29 +10,11 @@ The terminal emulator on Web browser.
 
 These images are based by [xterm.js](https://xtermjs.org).
 
-`docker run --rm -it -p 3000:3000 poad/web-terminal:_tag_`
+`docker run --rm -it -p 3000:3000 -d poad/web-terminal:_tag_`
 
 ### xtermjs
 
 The base image for each images by xtermjs.
-
-### xtermjs-jshell
-
-The JShell by [AdoptOpenJDK 11 Hostspot VM](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
-
-### xtermjs-sbt-console
-
-The [sbt](https://www.scala-sbt.org/index.html) console.
-
-### xtermjs-rust
-
-The Rust REPL by [Evcxr REPL](https://github.com/google/evcxr/tree/master/evcxr_repl)
-
-## web-terminal based images
-
-These images are based by [web-terminal](https://github.com/rabchev/web-terminal).
-
-`docker run --rm -it -p 3000:3000 poad/web-terminal:_tag_`
 
 ### jshell
 
@@ -45,6 +27,14 @@ The [sbt](https://www.scala-sbt.org/index.html) console.
 ### rust
 
 The Rust REPL by [Evcxr REPL](https://github.com/google/evcxr/tree/master/evcxr_repl)
+
+### wift
+
+The Swift REPL.
+
+_**Warning:** swift repl require privileged option._
+`docker run --rm -it -p 3000:3000 --privileged -d poad/web-terminal:swift`
+
 
 # Attention
 
