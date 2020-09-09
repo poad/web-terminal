@@ -199,6 +199,40 @@ RUN yarn install \
  && rm -rf src tsconfig.json webpack.config.js
 
 
+FROM java-base AS jshell-gradle
+
+USER node
+
+ENV JAVA_OPTS="--add-exports jdk.jshell/jdk.internal.jshell.tool=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED"
+
+COPY --chown=node:node assets/jshell-gradle/webshell /home/node/webshell
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js \
+ && mv build.gradle.example static/build.gradle
+
+
+FROM java-base AS jshell-maven
+
+USER node
+
+COPY --chown=node:node assets/jshell-maven/webshell /home/node/webshell
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js \
+ && mv pom.xml.example static/pom.xml
+
+
 FROM base AS rust
 
 USER node
