@@ -73,6 +73,8 @@ jobs:
         target: [
           'xtermjs',
           'jshell',
+          'jshell-gradle',
+          'jshell-maven',
           'rust',
           'sbt-console',
           'swift'
@@ -102,6 +104,8 @@ jobs:
         target: [
           'xtermjs',
           'jshell',
+          'jshell-gradle',
+          'jshell-maven',
           'rust',
           'sbt-console',
           'swift'
