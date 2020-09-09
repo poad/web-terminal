@@ -20,6 +20,14 @@ The base image for each images by xtermjs.
 
 The JShell by [AdoptOpenJDK 11 Hostspot VM](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot).
 
+### jshell-gradle
+
+The JShell by [AdoptOpenJDK 11 Hostspot VM](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot) with [jshell-gradle-plugin](https://github.com/bitterfox/jshell-gradle-plugin).
+
+### jshell-maven
+
+The JShell by [AdoptOpenJDK 11 Hostspot VM](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=hotspot) with [jshell-maven-plugin](https://github.com/bitterfox/jshell-maven-plugin).
+
 ### sbt-console
 
 The [sbt](https://www.scala-sbt.org/index.html) console.
