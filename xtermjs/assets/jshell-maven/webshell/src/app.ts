@@ -11,7 +11,7 @@ app.use(express.static(`${__dirname}/static`));
 // Instantiate shell and set up data handlers
 expressWs.app.ws('/shell', (ws, req) => {
   // Spawn the shell
-  const shell = pty.spawn('./mvnw jshell:compile', [], {
+  const shell = pty.spawn('./mvnw', ["compile", "com.github.johnpoth:jshell-maven-plugin:1.3:run"], {
     name: 'xterm-color',
     cwd: process.env.PWD,
     env: process.env

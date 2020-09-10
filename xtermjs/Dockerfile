@@ -8,6 +8,7 @@ ARG PYTHON_GET_PIP_SHA256="d4d62a0850fe0c2e6325b2cc20d818c580563de5a2038f917e3cb
 
 ARG JAVA_VERSION="11.0.8_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
+
 ARG SBT_VERSION="1.3.13"
 ARG SBT_HOME=/usr/local/sbt
 
@@ -17,7 +18,14 @@ ARG SWIFT_PLATFORM="ubuntu18.04"
 
 FROM poad/docker-openjdk:11-adopt-buster AS jdk
 
-FROM buildpack-deps:${BASE_IMAGE}-curl AS downloader
+FROM buildpack-deps:${BASE_IMAGE}-curl AS downloader-base
+
+WORKDIR /tmp
+RUN apt-get update -qq \
+ && apt-get install -qqy --no-install-recommends gnupg2 ca-certificates unzip \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
+FROM downloader-base AS downloader
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ARG PYTHON_PIP_VERSION
@@ -25,7 +33,15 @@ ARG PYTHON_PIP_VERSION
 ARG PYTHON_GET_PIP_URL
 ARG PYTHON_GET_PIP_SHA256
 
-ARG SBT_VERSION
+WORKDIR /tmp
+RUN curl -sSLo /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key \
+ && curl -sSLo get-pip.py "${PYTHON_GET_PIP_URL}" \
+ && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
+ && curl -sSLo /tmp/node_setup_12.x.sh https://deb.nodesource.com/setup_12.x
+
+#-----------------------------
+
+FROM downloader-base AS downloader-swift
 
 ARG SWIFT_VERSION
 ARG SWIFT_PLATFORM
@@ -35,14 +51,7 @@ ARG ARCHIVE_FILE="swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz"
 ARG DOWNLOAD_URL="https://swift.org/builds/swift-${SWIFT_VERSION}-release/ubuntu1804/swift-${SWIFT_VERSION}-RELEASE/${ARCHIVE_FILE}"
 
 WORKDIR /tmp
-RUN apt-get update -qq \
- && apt-get install -qqy --no-install-recommends gnupg2 ca-certificates \
- && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup.rs \
- && curl -sSL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp \
- && curl -sSLo /tmp/llvm-snapshot.gpg.key https://apt.llvm.org/llvm-snapshot.gpg.key \
- && curl -fsSL "$DOWNLOAD_URL" -o "/tmp/${ARCHIVE_FILE}" "${DOWNLOAD_URL}.sig" -o "/tmp/${ARCHIVE_FILE}.sig" \
- && curl -sSLo get-pip.py "${PYTHON_GET_PIP_URL}" \
- && echo "${PYTHON_GET_PIP_SHA256} *get-pip.py" | sha256sum -c - \
+RUN curl -fsSL "$DOWNLOAD_URL" -o "/tmp/${ARCHIVE_FILE}" "${DOWNLOAD_URL}.sig" -o "/tmp/${ARCHIVE_FILE}.sig" \
  && export GNUPGHOME="$(mktemp -d)" \
  && { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
  && curl -sS https://swift.org/keys/all-keys.asc | gpg --import - \
@@ -54,9 +63,24 @@ RUN apt-get update -qq \
     done \
  ;  gpg --verify "/tmp/${ARCHIVE_FILE}.sig" \
  && tar xf "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" \
- && rm -rf "${GNUPGHOME}" "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" "/tmp/${ARCHIVE_FILE}.sig" \
- && curl -sSLo /tmp/node_setup_12.x.sh https://deb.nodesource.com/setup_12.x
+ && rm -rf "${GNUPGHOME}" "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" "/tmp/${ARCHIVE_FILE}.sig"
 
+#-----------------------------
+
+FROM downloader-base AS downloader-sbt
+
+ARG SBT_VERSION
+
+WORKDIR /tmp
+RUN curl -sSL "https://github.com/sbt/sbt/releases/download/v${SBT_VERSION}/sbt-${SBT_VERSION}.tgz" | tar -xz -C /tmp
+
+
+FROM downloader-base AS downloader-rust
+
+WORKDIR /tmp
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/rustup.rs
+
+#-----------------------------
 
 FROM ubuntu:${BASE_IMAGE} AS base
 
@@ -104,7 +128,6 @@ RUN apt-get update -qq \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
 
-
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node 
 
@@ -112,9 +135,12 @@ USER node
 
 RUN mkdir -p /home/node/.yarn
 
+COPY --chown=node:node assets/base/webshell /home/node/webshell
 EXPOSE 3000
 
 CMD [ "yarn", "start" ]
+
+#-----------------------------
 
 FROM base AS xtermjs
 
@@ -129,9 +155,7 @@ RUN yarn install \
  && rm -rf src tsconfig.json webpack.config.js \
  && chown -R node:node /home/node
 
-EXPOSE 3000
-
-CMD [ "yarn", "start" ]
+#-----------------------------
 
 FROM base AS java-base
 
@@ -153,6 +177,8 @@ RUN for tool_path in "${JAVA_HOME}"/bin/*; do \
 
 USER node
 
+#-----------------------------
+
 FROM java-base AS sbt-console
 
 ARG SBT_HOME
@@ -162,7 +188,7 @@ ENV SBT_HOME=${SBT_HOME} \
 
 USER root
 
-COPY --from=downloader /tmp/sbt ${SBT_HOME}
+COPY --from=downloader-sbt /tmp/sbt ${SBT_HOME}
 
 RUN chown -R node:node /home/node 
 
@@ -183,6 +209,7 @@ RUN yarn install \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
 
+#-----------------------------
 
 FROM java-base AS jshell
 
@@ -198,6 +225,7 @@ RUN yarn install \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
 
+#-----------------------------
 
 FROM java-base AS jshell-gradle
 
@@ -214,12 +242,17 @@ RUN yarn install \
  && yarn run package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
- && mv build.gradle.example static/build.gradle
+ && mv build.gradle.example build.gradle
 
+#-----------------------------
 
 FROM java-base AS jshell-maven
 
+USER root
+
 USER node
+
+ENV JAVA_OPTS="--add-exports jdk.jshell/jdk.internal.jshell.tool=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED"
 
 COPY --chown=node:node assets/jshell-maven/webshell /home/node/webshell
 
@@ -230,14 +263,15 @@ RUN yarn install \
  && yarn run package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
- && mv pom.xml.example static/pom.xml
+ && mv pom.xml.example pom.xml
 
+#-----------------------------
 
 FROM base AS rust
 
 USER node
 
-COPY --chown=node:node --from=downloader /tmp/rustup.rs /tmp/rustup.rs
+COPY --chown=node:node --from=downloader-rust /tmp/rustup.rs /tmp/rustup.rs
 COPY --chown=node:node assets/rust/webshell /home/node/webshell
 
 ENV PATH=/home/node/.cargo/bin:${PATH}
@@ -254,6 +288,7 @@ RUN mkdir -p /home/node/.cargo \
  && /tmp/rustup.rs -y \
  && cargo install evcxr_repl
 
+#-----------------------------
 
 FROM base AS swift
 
@@ -263,7 +298,7 @@ ARG SWIFT_PLATFORM
 USER node
 
 COPY --chown=node:node assets/swift/webshell /home/node/webshell
-COPY --from=downloader "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}" /opt/swift
+COPY --from=downloader-swift "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}" /opt/swift
 
 ENV PATH=/opt/swift/usr/bin:${PATH}
 
