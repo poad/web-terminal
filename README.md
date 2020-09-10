@@ -36,7 +36,7 @@ The [sbt](https://www.scala-sbt.org/index.html) console.
 
 The Rust REPL by [Evcxr REPL](https://github.com/google/evcxr/tree/master/evcxr_repl)
 
-### wift
+### swift
 
 The Swift REPL.
 
