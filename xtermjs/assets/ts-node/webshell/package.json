@@ -1,0 +1,45 @@
+{
+  "name": "webshell",
+  "version": "1.0.0",
+  "private": true,
+  "description": "shell in your browser",
+  "dependencies": {
+    "@types/express": "^4.17.8",
+    "@types/node": "^14.6.2",
+    "@types/pty.js": "^0.2.35",
+    "@types/socket.io": "^2.1.11",
+    "@types/ws": "^7.2.6",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "lodash": "^4.17.20",
+    "node-pty": "^0.9.0",
+    "ts-node": "^9.0.0",
+    "upgrade": "^1.1.0",
+    "utf8": "^3.0.0",
+    "ws": "^7.3.1",
+    "xterm": "^4.8.1",
+    "xterm-addon-attach": "^0.6.0",
+    "xterm-addon-fit": "^0.4.0",
+    "xterm-addon-search": "^0.7.0",
+    "xterm-addon-web-links": "^0.4.0",
+    "yarn": "^1.22.5"
+  },
+  "devDependencies": {
+    "ts-loader": "^8.0.3",
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "main": "app.js",
+  "scripts": {
+    "setup": "yarn run build",
+    "prepare": "yarn run setup",
+    "build": "tsc --outDir . src/app.ts",
+    "prepackage": "yarn run build",
+    "package": "webpack --config webpack.config.js",
+    "prepublishOnly": "yarn run package",
+    "start": "node app.js"
+  },
+  "author": "Kenji Saito",
+  "license": "MIT"
+}

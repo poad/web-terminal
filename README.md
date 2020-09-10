@@ -32,17 +32,21 @@ The JShell by [AdoptOpenJDK 11 Hostspot VM](https://adoptopenjdk.net/?variant=op
 
 The [sbt](https://www.scala-sbt.org/index.html) console.
 
-### rust
+### Rust
 
 The Rust REPL by [Evcxr REPL](https://github.com/google/evcxr/tree/master/evcxr_repl)
 
-### swift
+### Swift
 
 The Swift REPL.
 
 _**Warning:** swift repl require privileged option._
 `docker run --rm -it -p 3000:3000 --privileged -d poad/web-terminal:swift`
 
+
+### TypeScript
+
+The TypeScript REPL by [ts-node](https://github.com/TypeStrong/ts-node)
 
 # Attention
 
