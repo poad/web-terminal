@@ -157,6 +157,25 @@ RUN yarn install \
 
 #-----------------------------
 
+FROM base AS ts-node
+
+WORKDIR /home/node/webshell
+
+RUN rm -rf package.json yarn.lock
+
+COPY --chown=node:node assets/ts-node/webshell /home/node/webshell
+
+WORKDIR /home/node/webshell
+
+RUN yarn install \
+ && yarn run build \
+ && yarn run package \
+ && cp -pR node_modules static/ \
+ && rm -rf src tsconfig.json webpack.config.js \
+ && chown -R node:node /home/node
+
+#-----------------------------
+
 FROM base AS java-base
 
 ARG JAVA_VERSION
