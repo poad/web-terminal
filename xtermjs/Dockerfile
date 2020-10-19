@@ -9,10 +9,10 @@ ARG PYTHON_GET_PIP_SHA256="d4d62a0850fe0c2e6325b2cc20d818c580563de5a2038f917e3cb
 ARG JAVA_VERSION="11.0.8_10"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 
-ARG SBT_VERSION="1.3.13"
+ARG SBT_VERSION="1.4.1"
 ARG SBT_HOME=/usr/local/sbt
 
-ARG SWIFT_VERSION="5.2.5"
+ARG SWIFT_VERSION="5.3"
 ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
 ARG SWIFT_PLATFORM="ubuntu18.04"
 
@@ -105,21 +105,24 @@ RUN apt-get update -qq \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
  && add-apt-repository ppa:deadsnakes/ppa -y \
  && apt-key add /tmp/llvm-snapshot.gpg.key \
- && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && cat /tmp/node_setup_12.x.sh | bash - \
+ && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-11 main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
       	libssl1.1 \
         make \
-		clang-10 \
-		lld-10 \
-		python3.8 \
+		clang-11 \
+		lld-11 \
+		python3.9 \
 		libpython2.7 \
 		libncurses5 \
 		libxml2 \
-		nodejs \
         gcc \
         g++ \
+ && cat /tmp/node_setup_12.x.sh | bash - \
+ && apt-get update -qq \
+ && apt-get install -qqy --no-install-recommends \
+		nodejs \
  && npm i -g yarn \
  && python /tmp/get-pip.py \
 		--disable-pip-version-check \
@@ -213,10 +216,10 @@ RUN chown -R node:node /home/node
 
 USER node
 
-RUN sbt compile clean
-
 RUN mkdir -p /home/node/sbt-console
 WORKDIR /home/node/sbt-console
+
+RUN sbt compile clean
 
 COPY --chown=node:node assets/sbt-console/webshell /home/node/webshell
 
