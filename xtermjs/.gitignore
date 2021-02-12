@@ -111,6 +111,6 @@ dist
 .vscode/*
 *.code-workspace
 
-
+assets/base/webshell/index.js
 assets/xtermjs/webshell/
 !assets/xtermjs/webshell/src
