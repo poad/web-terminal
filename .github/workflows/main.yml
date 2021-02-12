@@ -3,10 +3,10 @@ name: Node.js modules auto update and Docker Image push
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:    
-    - master 
+    - main 
   schedule:
     - cron:  '0 0 * * 3'
 

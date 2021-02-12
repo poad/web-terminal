@@ -7,8 +7,9 @@ ARG PIP_DOWNLOAD_HASH="fa7dc83944936bf09a0e4cb5d5ec852c0d256599"
 ARG PYTHON_GET_PIP_URL=https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/get-pip.py
 ARG PYTHON_GET_PIP_SHA256="6e0bb0a2c2533361d7f297ed547237caf1b7507f197835974c0dd7eba998c53c"
 
-ARG JAVA_VERSION="11.0.9.1_1"
+ARG JAVA_VERSION="11"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
+ARG SRC_JAVA_HOME=/usr/lib/jvm/zulu-${JAVA_VERSION}-azure-amd64
 
 ARG SBT_VERSION="1.4.3"
 ARG SBT_HOME=/usr/local/sbt
@@ -21,7 +22,7 @@ ARG SWIFT_PLATFORM="ubuntu20.04"
 ARG NODE_VERSION="14.x"
 ARG LLVM_VERSION=11
 
-FROM poad/docker-openjdk:11-adopt-${BASE_IMAGE} AS jdk
+FROM mcr.microsoft.com/java/jdk:11-zulu-ubuntu AS jdk
 
 FROM buildpack-deps:${BASE_IMAGE}-curl AS downloader-base
 
@@ -194,8 +195,9 @@ FROM base AS java-base
 
 ARG JAVA_VERSION
 ARG JAVA_HOME
+ARG SRC_JAVA_HOME
 
-COPY --from=jdk ${JAVA_HOME} ${JAVA_HOME}
+COPY --from=jdk ${SRC_JAVA_HOME} ${JAVA_HOME}
 
 ENV JAVA_HOME ${JAVA_HOME}
 ENV PATH "$JAVA_HOME/bin:$PATH"
