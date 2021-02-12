@@ -112,3 +112,5 @@ dist
 *.code-workspace
 
 
+assets/xtermjs/webshell/
+!assets/xtermjs/webshell/src
