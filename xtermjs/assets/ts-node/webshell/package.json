@@ -4,14 +4,14 @@
   "private": true,
   "description": "shell in your browser",
   "dependencies": {
-    "@types/express": "^4.17.11",
-    "@types/node": "^14.14.26",
+    "@types/express": "4.17.9",
+    "@types/node": "^14.14.31",
     "@types/pty.js": "^0.2.35",
     "@types/socket.io": "^2.1.13",
     "@types/ws": "^7.4.0",
     "express": "^4.17.1",
     "express-ws": "^4.0.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "node-pty": "^0.10.0",
     "ts-node": "^9.1.1",
     "upgrade": "^1.1.0",
@@ -26,9 +26,12 @@
   },
   "devDependencies": {
     "ts-loader": "^8.0.17",
-    "typescript": "^4.1.4",
-    "webpack": "^5.21.2",
+    "typescript": "^4.2.2",
+    "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0"
+  },
+  "resolutions": {
+    "@types/express": "4.17.9"
   },
   "main": "app.js",
   "scripts": {
