@@ -14,7 +14,7 @@ jobs:
   auto_update:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       if: github.event_name != 'pull_request'
     - uses: docker://node:lts-buster-slim
       if: github.event_name != 'pull_request'
@@ -81,7 +81,7 @@ jobs:
           'ts-node'
         ]
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
     - name: Build ${{ matrix.target }}
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
@@ -113,7 +113,7 @@ jobs:
           'ts-node'
         ]
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
       if: github.event_name != 'pull_request'
     - name: Build ${{ matrix.target }} and push
       if: github.event_name != 'pull_request'
