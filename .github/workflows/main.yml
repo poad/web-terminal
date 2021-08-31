@@ -43,7 +43,7 @@ jobs:
 
     - uses: poad/update-node-modules@v1.0.5
       with:
-        path: ./xtermjs/assets/base/webshell/package.json
+        path: xtermjs/assets/base/webshell/package.json
         yarn: true
 
     - name: Commit files
