@@ -15,7 +15,7 @@ ARG SBT_VERSION="1.5.5"
 ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
-ARG SWIFT_VERSION="5.4.2"
+ARG SWIFT_VERSION="5.5"
 ARG SWIFT_SIGNING_KEY="A62A E125 BBBF BB96 A6E0  42EC 925C C1CC ED3D 1561"
 ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2004"
 ARG SWIFT_PLATFORM="ubuntu20.04"
@@ -24,7 +24,7 @@ ARG NODE_VERSION="14.x"
 # https://llvm.org
 ARG LLVM_VERSION=12
 
-FROM mcr.microsoft.com/java/jdk:11-zulu-ubuntu AS jdk
+FROM mcr.microsoft.com/java/jdk:${JAVA_VERSION}-zulu-ubuntu AS jdk
 
 FROM buildpack-deps:${BASE_IMAGE}-curl AS downloader-base
 
