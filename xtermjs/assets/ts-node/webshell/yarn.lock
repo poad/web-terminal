@@ -608,9 +608,9 @@ envinfo@^7.7.3:
   integrity sha512-/o+BXHmB7ocbHEAs6F2EnG0ogybVVUdkRunTT2glZU9XAaGmhqskrvKwqXuDfNjEO0LZKWdejEEpnq8aM0tOaw==
 
 es-module-lexer@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-0.9.0.tgz#fe4c4621977bc668e285c5f1f70ca3b451095fda"
-  integrity sha512-qU2eN/XHsrl3E4y7mK1wdWnyy5c8gXtCbfP6Xcsemm7fPUR1PIV1JhZfP7ojcN0Fzp69CfrS3u76h2tusvfKiQ==
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/es-module-lexer/-/es-module-lexer-0.9.1.tgz#f203bf394a630a552d381acf01a17ef08843b140"
+  integrity sha512-17Ed9misDnpyNBJh63g1OhW3qUFecDgGOivI85JeZY/LGhDum8e+cltukbkSK8pcJnXXEkya56sp4vSS1nzoUw==
 
 escalade@^3.1.1:
   version "3.1.1"
