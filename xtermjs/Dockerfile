@@ -22,7 +22,7 @@ ARG SWIFT_PLATFORM="ubuntu20.04"
 
 ARG NODE_VERSION="14.x"
 # https://llvm.org
-ARG LLVM_VERSION=12
+ARG LLVM_VERSION=13
 
 FROM mcr.microsoft.com/java/jdk:${JAVA_VERSION}-zulu-ubuntu AS jdk
 
