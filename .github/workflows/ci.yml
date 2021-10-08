@@ -1,0 +1,34 @@
+name: build
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        target: [
+          'xtermjs',
+          'jshell',
+          'jshell-gradle',
+          'jshell-maven',
+          'rust',
+          'sbt-console',
+          'swift',
+          'ts-node'
+        ]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build an image from Dockerfile
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          CUR=$(pwd) && \
+          cd xtermjs && \
+          docker build --rm --target "${{ matrix.target }}" -t "poad/web-terminal:${{ matrix.target }}" . && \
+          cd ${CUR}
