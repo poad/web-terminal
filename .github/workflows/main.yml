@@ -1,9 +1,6 @@
 name: Node.js modules auto update and Docker Image push
 
 on:
-  push:
-    branches:    
-    - main 
   schedule:
     - cron:  '0 0 * * 3'
 
