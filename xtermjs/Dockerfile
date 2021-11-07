@@ -16,7 +16,7 @@ ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
 ARG SWIFT_VERSION="5.5.1"
-ARG SWIFT_SIGNING_KEY="A62A E125 BBBF BB96 A6E0  42EC 925C C1CC ED3D 1561"
+ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
 ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2004"
 ARG SWIFT_PLATFORM="ubuntu20.04"
 
@@ -65,12 +65,8 @@ RUN echo ${DOWNLOAD_URL}
 RUN curl -fsSL "$DOWNLOAD_URL" -o "/tmp/${ARCHIVE_FILE}" "${DOWNLOAD_URL}.sig" -o "/tmp/${ARCHIVE_FILE}.sig" \
  && export GNUPGHOME="$(mktemp -d)" \
  && { command -v gpgconf > /dev/null && gpgconf --kill all || :; } \
- && curl -sS https://swift.org/keys/all-keys.asc | gpg --import - \
- && for keyserver in "ha.pool.sks-keyservers.net" "hkp://pool.sks-keyservers.net" "hkp://pgp.mit.edu:80"; do \
-        gpg --batch --quiet --keyserver "${keyserver}" --recv-keys "${SWIFT_SIGNING_KEY}" \
-     && gpg --keyserver "${keyserver}" --refresh-keys Swift \
-     && break;\
-    done \
+ && gpg --batch --quiet --keyserver keyserver.ubuntu.com --recv-keys "$SWIFT_SIGNING_KEY" \
+ && gpg --batch --verify swift.tar.gz.sig swift.tar.gz \
  ;  gpg --verify "/tmp/${ARCHIVE_FILE}.sig" \
  && tar xf "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" \
  && rm -rf "${GNUPGHOME}" "/tmp/swift-${SWIFT_VERSION}-RELEASE-${SWIFT_PLATFORM}.tar.gz" "/tmp/${ARCHIVE_FILE}.sig"
