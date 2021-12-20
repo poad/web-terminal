@@ -16,7 +16,7 @@
     "ts-node": "^10.4.0",
     "upgrade": "^1.1.0",
     "utf8": "^3.0.0",
-    "ws": "^8.3.0",
+    "ws": "^8.4.0",
     "xterm": "^4.15.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0",
