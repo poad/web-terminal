@@ -11,7 +11,7 @@ ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ARG SRC_JAVA_HOME=/usr/lib/jvm/zulu-${JAVA_VERSION}-azure-amd64
 
 # https://www.scala-sbt.org/download.html
-ARG SBT_VERSION="1.5.7"
+ARG SBT_VERSION="1.6.0"
 ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
