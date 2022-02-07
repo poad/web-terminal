@@ -5,7 +5,7 @@
   "description": "shell in your browser",
   "dependencies": {
     "@types/express": "^4.17.13",
-    "@types/node": "^17.0.15",
+    "@types/node": "^17.0.16",
     "@types/pty.js": "^0.2.36",
     "@types/socket.io": "^3.0.2",
     "@types/ws": "^8.2.2",
@@ -13,14 +13,14 @@
     "express-ws": "^5.0.2",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.1",
-    "ts-node": "^10.4.0",
+    "ts-node": "^10.5.0",
     "utf8": "^3.0.0",
-    "ws": "^8.4.2",
-    "xterm": "^4.16.0",
+    "ws": "^8.5.0",
+    "xterm": "^4.17.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0",
     "xterm-addon-search": "^0.8.2",
-    "xterm-addon-web-links": "^0.5.0",
+    "xterm-addon-web-links": "^0.5.1",
     "yarn": "^1.22.17"
   },
   "devDependencies": {
@@ -28,9 +28,6 @@
     "typescript": "^4.5.5",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2"
-  },
-  "resolutions": {
-    "@types/express": "4.17.13"
   },
   "main": "app.js",
   "scripts": {
