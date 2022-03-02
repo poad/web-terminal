@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]' && github.event_name != 'pull_request'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Use Node.js 14.x
       uses: actions/setup-node@v3.0.0
       with:
@@ -125,7 +125,7 @@ jobs:
           'ts-node'
         ]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
     - name: Build ${{ matrix.target }}
       if: github.event_name == 'pull_request' && github.event_name != 'schedule'
@@ -157,7 +157,7 @@ jobs:
           'ts-node'
         ]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       if: github.event_name != 'pull_request'
     - name: Build ${{ matrix.target }} and push
       if: github.event_name != 'pull_request'
