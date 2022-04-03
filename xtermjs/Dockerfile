@@ -1,28 +1,28 @@
 ARG BASE_IMAGE="focal"
 
-ARG PYTHON_PIP_VERSION="21.2.4"
+ARG PYTHON_PIP_VERSION="22.0.4"
 # https://github.com/docker-library/python/blob/master/3.10/buster/Dockerfile
-ARG PIP_DOWNLOAD_HASH="3cb8888cc2869620f57d5d2da64da38f516078c7"
+ARG PIP_DOWNLOAD_HASH="38e54e5de07c66e875c11a1ebbdb938854625dd8"
 ARG PYTHON_GET_PIP_URL="https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/public/get-pip.py"
-ARG PYTHON_GET_PIP_SHA256="c518250e91a70d7b20cceb15272209a4ded2a0c263ae5776f129e0d9b5674309"
+ARG PYTHON_GET_PIP_SHA256="e235c437e5c7d7524fbce3880ca39b917a73dc565e0c813465b7a7a329bb279a"
 
 ARG JAVA_VERSION="11"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ARG SRC_JAVA_HOME=/usr/lib/jvm/zulu-${JAVA_VERSION}-azure-amd64
 
 # https://www.scala-sbt.org/download.html
-ARG SBT_VERSION="1.6.1"
+ARG SBT_VERSION="1.6.2"
 ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
-ARG SWIFT_VERSION="5.5.2"
+ARG SWIFT_VERSION="5.6"
 ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
 ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2004"
 ARG SWIFT_PLATFORM="ubuntu20.04"
 
-ARG NODE_VERSION="14.x"
+ARG NODE_VERSION="16.x"
 # https://llvm.org
-ARG LLVM_VERSION=13
+ARG LLVM_VERSION=14
 
 FROM mcr.microsoft.com/java/jdk:${JAVA_VERSION}-zulu-ubuntu AS jdk
 
