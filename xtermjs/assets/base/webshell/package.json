@@ -9,12 +9,12 @@
     "@types/pty.js": "^0.2.36",
     "@types/socket.io": "^3.0.2",
     "@types/ws": "^8.5.3",
-    "express": "^4.18.0",
+    "express": "^4.18.1",
     "express-ws": "^5.0.2",
     "lodash": "^4.17.21",
     "node-pty": "^0.10.1",
     "utf8": "^3.0.0",
-    "ws": "^8.5.0",
+    "ws": "^8.6.0",
     "xterm": "^4.18.0",
     "xterm-addon-attach": "^0.6.0",
     "xterm-addon-fit": "^0.5.0",
@@ -23,22 +23,19 @@
     "yarn": "^1.22.18"
   },
   "devDependencies": {
-    "ts-loader": "^9.2.9",
+    "ts-loader": "^9.3.0",
     "typescript": "^4.6.4",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   },
-  "resolutions": {
-    "@types/express": "4.17.13"
-  },
   "main": "app.js",
   "scripts": {
-    "setup": "yarn run build",
-    "prepare": "yarn run setup",
+    "setup": "yarn build",
+    "prepare": "yarn setup",
     "build": "tsc --outDir . src/*.ts",
-    "prepackage": "yarn run build",
+    "prepackage": "yarn build",
     "package": "webpack --config webpack.config.js",
-    "prepublishOnly": "yarn run package",
+    "prepublishOnly": "yarn package",
     "start": "node app.js"
   },
   "author": "Kenji Saito",
