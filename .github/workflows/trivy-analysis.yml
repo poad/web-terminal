@@ -43,6 +43,7 @@ jobs:
         with:
           image-ref: 'poad/web-terminal:${{ matrix.target }}'
           format: 'template'
+          timeout: '10m'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
