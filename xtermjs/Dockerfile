@@ -162,8 +162,8 @@ COPY --chown=node:node assets/xtermjs/webshell /home/node/webshell
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && chown -R node:node /home/node
@@ -181,8 +181,8 @@ COPY --chown=node:node assets/ts-node/webshell /home/node/webshell
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && chown -R node:node /home/node
@@ -237,8 +237,8 @@ COPY --chown=node:node assets/sbt-console/webshell /home/node/webshell
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
 
@@ -253,8 +253,8 @@ COPY --chown=node:node assets/jshell/webshell /home/node/webshell
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
 
@@ -271,8 +271,8 @@ COPY --chown=node:node assets/jshell-gradle/webshell /home/node/webshell
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && mv build.gradle.example build.gradle
@@ -292,8 +292,8 @@ COPY --chown=node:node assets/jshell-maven/webshell /home/node/webshell
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && mv pom.xml.example pom.xml
@@ -313,8 +313,8 @@ WORKDIR /home/node/webshell
 
 RUN mkdir -p /home/node/.cargo \
  && yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && chmod 744 /tmp/rustup.rs \
@@ -338,7 +338,7 @@ ENV PATH=/opt/swift/usr/bin:${PATH}
 WORKDIR /home/node/webshell
 
 RUN yarn install \
- && yarn run build \
- && yarn run package \
+ && yarn build \
+ && yarn package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
