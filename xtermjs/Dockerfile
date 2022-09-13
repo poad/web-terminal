@@ -1,10 +1,10 @@
-ARG BASE_IMAGE="focal"
+ARG BASE_IMAGE="jammy"
 
-ARG PYTHON_PIP_VERSION="22.0.4"
+ARG PYTHON_PIP_VERSION="22.2.2"
 # https://github.com/docker-library/python/blob/master/3.10/buster/Dockerfile
-ARG PIP_DOWNLOAD_HASH="38e54e5de07c66e875c11a1ebbdb938854625dd8"
+ARG PIP_DOWNLOAD_HASH="5eaac1050023df1f5c98b173b248c260023f2278"
 ARG PYTHON_GET_PIP_URL="https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/public/get-pip.py"
-ARG PYTHON_GET_PIP_SHA256="e235c437e5c7d7524fbce3880ca39b917a73dc565e0c813465b7a7a329bb279a"
+ARG PYTHON_GET_PIP_SHA256="5aefe6ade911d997af080b315ebcb7f882212d070465df544e1175ac2be519b4"
 
 ARG JAVA_VERSION="11"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
@@ -15,10 +15,10 @@ ARG SBT_VERSION="1.7.1"
 ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
-ARG SWIFT_VERSION="5.6.2"
+ARG SWIFT_VERSION="5.7"
 ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
-ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2004"
-ARG SWIFT_PLATFORM="ubuntu20.04"
+ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2204"
+ARG SWIFT_PLATFORM="ubuntu22.04"
 
 ARG NODE_VERSION="16.x"
 # https://llvm.org
@@ -118,13 +118,11 @@ RUN apt-get update -qq \
  && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
-      	libssl1.1 \
         make \
 		clang-${LLVM_VERSION} \
 		lld-${LLVM_VERSION} \
-		python3.9 \
+		python3.10 \
         python3-distutils \
-		libpython2.7 \
 		libncurses5 \
 		libxml2 \
         gcc \
@@ -134,7 +132,7 @@ RUN apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		nodejs \
  && npm i -g yarn \
- && python3.9 /tmp/get-pip.py \
+ && python3.10 /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==${PYTHON_PIP_VERSION}" \
