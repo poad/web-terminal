@@ -1505,9 +1505,9 @@ xterm-addon-search@*:
   integrity sha512-l+kjDxNDQbkniU5OUo9BHknxUEPZGM0OFpVpc2sMmrb97S0FKJVJO4wAZPJvSGVJ8ZEG6KuDyzXluvnb08t71Q==
 
 xterm-addon-web-links@*:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/xterm-addon-web-links/-/xterm-addon-web-links-0.7.0.tgz#dceac36170605f9db10a01d716bd83ee38f65c17"
-  integrity sha512-6PqoqzzPwaeSq22skzbvyboDvSnYk5teUYEoKBwMYvhbkwOQkemZccjWHT5FnNA8o1aInTc4PRYAl4jjPucCKA==
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-web-links/-/xterm-addon-web-links-0.8.0.tgz#2cb1d57129271022569208578b0bf4774e7e6ea9"
+  integrity sha512-J4tKngmIu20ytX9SEJjAP3UGksah7iALqBtfTwT9ZnmFHVplCumYQsUJfKuS+JwMhjsjH61YXfndenLNvjRrEw==
 
 xterm@*:
   version "5.0.0"
