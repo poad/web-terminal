@@ -1490,9 +1490,9 @@ ws@~8.2.3:
   integrity sha512-wBuoj1BDpC6ZQ1B7DWQBYVLphPWkm8i9Y0/3YdHjHKHiohOJ1ws+3OccDWtH+PoC9DZD5WOTrJvNbWvjS6JWaA==
 
 xterm-addon-attach@*:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/xterm-addon-attach/-/xterm-addon-attach-0.7.0.tgz#6775b3c5f1e9f91ae4cd9089f5ecb49fda8d2946"
-  integrity sha512-Yh3Kvq2e28onjnmGizQKZwlRMp9gmuZEHVX0BVZbo463YSjkqfhQS3T2wMLuO+j8AokccXsMa1z0bH1/+MMYuQ==
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-attach/-/xterm-addon-attach-0.8.0.tgz#86e0ed08460efffb7d4bad74a57b600226594def"
+  integrity sha512-k8N5boSYn6rMJTTNCgFpiSTZ26qnYJf3v/nJJYexNO2sdAHDN3m1ivVQWVZ8CHJKKnZQw1rc44YP2NtgalWHfQ==
 
 xterm-addon-fit@*:
   version "0.6.0"
