@@ -1,26 +1,26 @@
 ARG BASE_IMAGE="jammy"
 
-ARG PYTHON_PIP_VERSION="22.2.2"
-# https://github.com/docker-library/python/blob/master/3.10/buster/Dockerfile
-ARG PIP_DOWNLOAD_HASH="5eaac1050023df1f5c98b173b248c260023f2278"
+ARG PYTHON_PIP_VERSION="22.3.1"
+# https://github.com/docker-library/python/blob/master/3.11/bullseye/Dockerfile
+ARG PIP_DOWNLOAD_HASH="0fe65e3c4342300f77a1158d9f2b06fbcf054a88"
 ARG PYTHON_GET_PIP_URL="https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/public/get-pip.py"
-ARG PYTHON_GET_PIP_SHA256="5aefe6ade911d997af080b315ebcb7f882212d070465df544e1175ac2be519b4"
+ARG PYTHON_GET_PIP_SHA256="69a1d4496fe9ab42ffe23fc005e6250cb2899902249855278ee200221c131706"
 
 ARG JAVA_VERSION="11"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ARG SRC_JAVA_HOME=/usr/lib/jvm/zulu-${JAVA_VERSION}-azure-amd64
 
 # https://www.scala-sbt.org/download.html
-ARG SBT_VERSION="1.7.1"
+ARG SBT_VERSION="1.8.2"
 ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
-ARG SWIFT_VERSION="5.7"
+ARG SWIFT_VERSION="5.8"
 ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
 ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2204"
 ARG SWIFT_PLATFORM="ubuntu22.04"
 
-ARG NODE_VERSION="16.x"
+ARG NODE_VERSION="18.x"
 # https://llvm.org
 ARG LLVM_VERSION=14
 
