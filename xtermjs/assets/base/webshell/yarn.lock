@@ -442,9 +442,9 @@ call-bind@^1.0.0:
     get-intrinsic "^1.0.2"
 
 caniuse-lite@^1.0.30001449:
-  version "1.0.30001488"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001488.tgz#d19d7b6e913afae3e98f023db97c19e9ddc5e91f"
-  integrity sha512-NORIQuuL4xGpIy6iCCQGN4iFjlBXtfKWIenlUuyZJumLRIindLb7wXM+GO8erEhb7vXfcnf4BAg2PrSDN5TNLQ==
+  version "1.0.30001489"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001489.tgz#ca82ee2d4e4dbf2bd2589c9360d3fcc2c7ba3bd8"
+  integrity sha512-x1mgZEXK8jHIfAxm+xgdpHpk50IN3z3q3zP261/WS+uvePxW8izXuCu6AHz0lkuYTlATDehiZ/tNyYBdSQsOUQ==
 
 chalk@^4.1.0:
   version "4.1.2"
@@ -1262,9 +1262,9 @@ socket.io-adapter@~2.5.2:
     ws "~8.11.0"
 
 socket.io-parser@~4.2.1:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/socket.io-parser/-/socket.io-parser-4.2.2.tgz#1dd384019e25b7a3d374877f492ab34f2ad0d206"
-  integrity sha512-DJtziuKypFkMMHCm2uIshOYC7QaylbtzQwiMYDuCKy3OPkjLzu4B2vAhTlqipRHHzrI0NJeBAizTK7X+6m1jVw==
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/socket.io-parser/-/socket.io-parser-4.2.3.tgz#926bcc6658e2ae0883dc9dee69acbdc76e4e3667"
+  integrity sha512-JMafRntWVO2DCJimKsRTh/wnqVvO4hrfwOqtO7f+uzwsQMuxO6VwImtYxaQ+ieoyshWOTJyV0fA21lccEXRPpQ==
   dependencies:
     "@socket.io/component-emitter" "~3.1.0"
     debug "~4.3.1"
@@ -1335,9 +1335,9 @@ terser-webpack-plugin@^5.3.7:
     terser "^5.16.8"
 
 terser@^5.16.8:
-  version "5.17.4"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.17.4.tgz#b0c2d94897dfeba43213ed5f90ed117270a2c696"
-  integrity sha512-jcEKZw6UPrgugz/0Tuk/PVyLAPfMBJf5clnGueo45wTweoV8yh7Q7PEkhkJ5uuUbC7zAxEcG3tqNr1bstkQ8nw==
+  version "5.17.5"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.17.5.tgz#557141b662b5978ac3d6a2f3d6455a26267ddcd4"
+  integrity sha512-NqFkzBX34WExkCbk3K5urmNCpEWqMPZnwGI1pMHwqvJ/zDlXC75u3NI7BrzoR8/pryy8Abx2e1i8ChrWkhH1Hg==
   dependencies:
     "@jridgewell/source-map" "^0.3.2"
     acorn "^8.5.0"
@@ -1442,9 +1442,9 @@ webpack-cli@*:
     webpack-merge "^5.7.3"
 
 webpack-merge@^5.7.3:
-  version "5.8.0"
-  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-5.8.0.tgz#2b39dbf22af87776ad744c390223731d30a68f61"
-  integrity sha512-/SaI7xY0831XwP6kzuwhKWVKDP9t1QY1h65lAFLbZqMPIuYcD9QAW4u9STIbU9kaJbPBB/geU/gLr1wDjOhQ+Q==
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-5.9.0.tgz#dc160a1c4cf512ceca515cc231669e9ddb133826"
+  integrity sha512-6NbRQw4+Sy50vYNTw7EyOn41OZItPiXB8GNv3INSoe3PSFaHJEz3SHTrYVaRm2LilNGnFUzh0FAwqPEmU/CwDg==
   dependencies:
     clone-deep "^4.0.1"
     wildcard "^2.0.0"
