@@ -1621,9 +1621,9 @@ xterm-addon-web-links@*:
   integrity sha512-J4tKngmIu20ytX9SEJjAP3UGksah7iALqBtfTwT9ZnmFHVplCumYQsUJfKuS+JwMhjsjH61YXfndenLNvjRrEw==
 
 xterm@*:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/xterm/-/xterm-5.1.0.tgz#3e160d60e6801c864b55adf19171c49d2ff2b4fc"
-  integrity sha512-LovENH4WDzpwynj+OTkLyZgJPeDom9Gra4DMlGAgz6pZhIDCQ+YuO7yfwanY+gVbn/mmZIStNOnVRU/ikQuAEQ==
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/xterm/-/xterm-5.2.0.tgz#7e716bbe448ecef0ea387586c59fbc51a08f9125"
+  integrity sha512-C1NXTZYfXPTXzF7uw7Ao6/IFGrtAkHv4e/PCQRpgYHyMobvaRs3nJNGK32hX/skdMUQJ6yhSnyzfmWCQwG9qvg==
 
 yallist@^4.0.0:
   version "4.0.0"
