@@ -13,7 +13,7 @@ if [ $result -ne 0 ]; then
   exit $result
 fi
 
-cd "${CURRENT}"/xtermjs/assets/base/webshell
+cd "${CURRENT}"/assets/base/webshell
 result=$?
 if [ $result -ne 0 ]; then
   cd "${CUR}"
@@ -28,7 +28,7 @@ if [ $result -ne 0 ]; then
   exit $result
 fi
 
-cd "${CURRENT}"/xtermjs/assets/ts-node/webshell
+cd "${CURRENT}"/assets/ts-node/webshell
 result=$?
 if [ $result -ne 0 ]; then
   cd "${CUR}"

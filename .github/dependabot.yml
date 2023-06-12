@@ -11,7 +11,7 @@ updates:
       - poad
 
   - package-ecosystem: npm
-    directory: '/xtermjs/assets/base/webshell'
+    directory: '/assets/base/webshell'
     schedule:
       interval: daily
       timezone: Asia/Tokyo
@@ -22,7 +22,7 @@ updates:
       - poad
 
   - package-ecosystem: npm
-    directory: '/xtermjs/assets/ts-node/webshell'
+    directory: '/assets/ts-node/webshell'
     schedule:
       interval: daily
       timezone: Asia/Tokyo
