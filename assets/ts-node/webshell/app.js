@@ -15,7 +15,7 @@ expressWs.app.ws('/shell', function (ws, req) {
         env: process.env
     });
     // For all shell data send it to the websocket
-    shell.on('data', function (data) {
+    shell.onData(function (data) {
         ws.send(data);
     });
     // For all websocket data send it to the shell

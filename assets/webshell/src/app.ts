@@ -11,7 +11,7 @@ app.use(express.static(`${__dirname}/static`));
 // Instantiate shell and set up data handlers
 expressWs.app.ws('/shell', (ws, req) => {
   // Spawn the shell
-  const shell = pty.spawn('/home/node/.cargo/bin/evcxr', [], {
+  const shell = pty.spawn(process.env.SHELL, [], {
     name: 'xterm-color',
     cwd: process.env.PWD,
     env: process.env

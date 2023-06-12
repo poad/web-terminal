@@ -6,7 +6,7 @@ ARG PIP_DOWNLOAD_HASH="0d8570dc44796f4369b652222cf176b3db6ac70e"
 ARG PYTHON_GET_PIP_URL="https://github.com/pypa/get-pip/raw/${PIP_DOWNLOAD_HASH}/public/get-pip.py"
 ARG PYTHON_GET_PIP_SHA256="96461deced5c2a487ddc65207ec5a9cffeca0d34e7af7ea1afc470ff0d746207"
 
-ARG JAVA_VERSION="11"
+ARG JAVA_VERSION="17"
 ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ARG SRC_JAVA_HOME=/usr/lib/jvm/zulu-${JAVA_VERSION}-azure-amd64
 
@@ -121,7 +121,7 @@ RUN apt-get update -qq \
         make \
 		clang-${LLVM_VERSION} \
 		lld-${LLVM_VERSION} \
-		python3.10 \
+		python3.11 \
         python3-distutils \
 		libncurses5 \
 		libxml2 \
@@ -132,7 +132,7 @@ RUN apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		nodejs \
  && npm i -g yarn \
- && python3.10 /tmp/get-pip.py \
+ && python3.11 /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==${PYTHON_PIP_VERSION}" \
@@ -155,7 +155,7 @@ CMD [ "yarn", "start" ]
 
 FROM base AS xtermjs
 
-COPY --chown=node:node assets/xtermjs/webshell /home/node/webshell
+COPY --chown=node:node assets/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
