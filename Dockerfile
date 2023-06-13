@@ -1,5 +1,6 @@
 ARG BASE_IMAGE="jammy"
 
+ARG PYTHON_VERSION="3.11"
 ARG PYTHON_PIP_VERSION="23.1.2"
 # https://github.com/docker-library/python/blob/master/3.11/bullseye/Dockerfile
 ARG PIP_DOWNLOAD_HASH="0d8570dc44796f4369b652222cf176b3db6ac70e"
@@ -98,6 +99,7 @@ ARG BASE_IMAGE
 ARG PYTHON_PIP_VERSION
 ARG NODE_VERSION
 ARG LLVM_VERSION
+ARG PYTHON_VERSION
 
 ENV LANG=C.UTF-8 \
     DEBIAN_FRONTEND=noninteractive
@@ -121,18 +123,21 @@ RUN apt-get update -qq \
         make \
 		clang-${LLVM_VERSION} \
 		lld-${LLVM_VERSION} \
-		python3.11 \
+		python$${PYTHON_VERSION} \
         python3-distutils \
 		libncurses5 \
 		libxml2 \
         gcc \
         g++ \
  && cat /tmp/node_setup_${NODE_VERSION}.sh | bash - \
- && apt-get update -qq \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
+RUN apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		nodejs \
  && npm i -g yarn \
- && python3.11 /tmp/get-pip.py \
+ && python${PYTHON_VERSION} /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==${PYTHON_PIP_VERSION}" \
