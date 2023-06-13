@@ -117,7 +117,10 @@ RUN apt-get update -qq \
  && add-apt-repository ppa:deadsnakes/ppa -y \
  && apt-key add /tmp/llvm-snapshot.gpg.key \
  && echo "deb http://apt.llvm.org/${BASE_IMAGE}/ llvm-toolchain-${BASE_IMAGE}-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && apt-get update -qq \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
+RUN apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
         make \
