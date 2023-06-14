@@ -115,8 +115,8 @@ WORKDIR /usr/local/bin
 RUN apt-get update -qq \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
  && add-apt-repository ppa:deadsnakes/ppa -y \
- && apt-key add /tmp/llvm-snapshot.gpg.key \
- && echo "deb http://apt.llvm.org/${BASE_IMAGE}/ llvm-toolchain-${BASE_IMAGE}-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
+ && cat /tmp/llvm-snapshot.gpg.key | gpg --dearmor -o /usr/share/keyrings/llvm-keyring.gpg \
+ && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/llvm-keyring.gpg] http://apt.llvm.org/${BASE_IMAGE}/ llvm-toolchain-${BASE_IMAGE}-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
 
@@ -126,7 +126,7 @@ RUN apt-get update -qq \
         make \
 		clang-${LLVM_VERSION} \
 		lld-${LLVM_VERSION} \
-		python$${PYTHON_VERSION} \
+		python${PYTHON_VERSION} \
         python3-distutils \
 		libncurses5 \
 		libxml2 \
@@ -139,7 +139,10 @@ RUN apt-get update -qq \
 RUN apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		nodejs \
- && npm i -g yarn \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
+
+RUN npm i -g pnpm \
  && python${PYTHON_VERSION} /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
@@ -152,12 +155,12 @@ RUN groupadd --gid 1000 node \
 
 USER node
 
-RUN mkdir -p /home/node/.yarn
+RUN mkdir -p /home/node/.pnpm
 
 COPY --chown=node:node assets/base/webshell /home/node/webshell
 EXPOSE 3000
 
-CMD [ "yarn", "start" ]
+CMD [ "pnpm", "start" ]
 
 #-----------------------------
 
@@ -167,9 +170,9 @@ COPY --chown=node:node assets/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && chown -R node:node /home/node
@@ -180,15 +183,15 @@ FROM base AS ts-node
 
 WORKDIR /home/node/webshell
 
-RUN rm -rf package.json yarn.lock
+RUN rm -rf package.json pnpm-lock.yaml
 
 COPY --chown=node:node assets/ts-node/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && chown -R node:node /home/node
@@ -242,9 +245,9 @@ COPY --chown=node:node assets/sbt-console/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
 
@@ -258,9 +261,9 @@ COPY --chown=node:node assets/jshell/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
 
@@ -276,9 +279,9 @@ COPY --chown=node:node assets/jshell-gradle/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && mv build.gradle.example build.gradle
@@ -297,9 +300,9 @@ COPY --chown=node:node assets/jshell-maven/webshell /home/node/webshell
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && mv pom.xml.example pom.xml
@@ -318,9 +321,9 @@ ENV PATH=/home/node/.cargo/bin:${PATH}
 WORKDIR /home/node/webshell
 
 RUN mkdir -p /home/node/.cargo \
- && yarn install \
- && yarn build \
- && yarn package \
+ && pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js \
  && chmod 744 /tmp/rustup.rs \
@@ -343,8 +346,8 @@ ENV PATH=/opt/swift/usr/bin:${PATH}
 
 WORKDIR /home/node/webshell
 
-RUN yarn install \
- && yarn build \
- && yarn package \
+RUN pnpm install \
+ && pnpm build \
+ && pnpm package \
  && cp -pR node_modules static/ \
  && rm -rf src tsconfig.json webpack.config.js
