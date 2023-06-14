@@ -114,3 +114,4 @@ dist
 assets/base/webshell/index.js
 assets/xtermjs/webshell/
 !assets/xtermjs/webshell/src
+assets/ts-node/webshell/app.js

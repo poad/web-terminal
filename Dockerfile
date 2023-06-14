@@ -102,7 +102,8 @@ ARG LLVM_VERSION
 ARG PYTHON_VERSION
 
 ENV LANG=C.UTF-8 \
-    DEBIAN_FRONTEND=noninteractive
+    DEBIAN_FRONTEND=noninteractive \
+    SHELL=bash
 
 COPY --from=downloader /tmp/get-pip.py /tmp/get-pip.py
 COPY --from=downloader /tmp/llvm-snapshot.gpg.key /tmp/llvm-snapshot.gpg.key
@@ -113,14 +114,13 @@ WORKDIR /usr/local/bin
 
 # extra dependencies (over what buildpack-deps already includes)
 RUN apt-get update -qq \
+ && apt-get full-upgrade -qqy \
  && apt-get install --no-install-recommends -qqy ca-certificates gnupg2 binutils apt-utils software-properties-common \
  && add-apt-repository ppa:deadsnakes/ppa -y \
  && cat /tmp/llvm-snapshot.gpg.key | gpg --dearmor -o /usr/share/keyrings/llvm-keyring.gpg \
  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/llvm-keyring.gpg] http://apt.llvm.org/${BASE_IMAGE}/ llvm-toolchain-${BASE_IMAGE}-${LLVM_VERSION} main" >> /etc/apt/sources.list.d/llvm-toolchain.list \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
-
-RUN apt-get update -qq \
+ && cat /tmp/node_setup_${NODE_VERSION}.sh | bash - \
+ && apt-get update -qq \
  && apt-get install -qqy --no-install-recommends \
 		libexpat1 \
         make \
@@ -132,22 +132,15 @@ RUN apt-get update -qq \
 		libxml2 \
         gcc \
         g++ \
- && cat /tmp/node_setup_${NODE_VERSION}.sh | bash - \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
-
-RUN apt-get update -qq \
- && apt-get install -qqy --no-install-recommends \
-		nodejs \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
-
-RUN npm i -g pnpm \
+        nodejs \
+ && apt-get autoclean \
+ && apt-get clean all \
+ && npm -g i npm pnpm \
+ && pnpm setup \
  && python${PYTHON_VERSION} /tmp/get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		"pip==${PYTHON_PIP_VERSION}" \
- && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/log/apt/* /var/log/alternatives.log /var/log/dpkg.log /var/log/faillog /var/log/lastlog
 
 RUN groupadd --gid 1000 node \
