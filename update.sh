@@ -13,7 +13,7 @@ if [ $result -ne 0 ]; then
   exit $result
 fi
 
-cd "${CURRENT}"/assets/base/webshell
+cd "${CURRENT}"
 result=$?
 if [ $result -ne 0 ]; then
   cd "${CUR}"
@@ -21,22 +21,7 @@ if [ $result -ne 0 ]; then
 fi
 echo ""
 pwd
-pnpm install && pnpm up
-result=$?
-if [ $result -ne 0 ]; then
-  cd "${CUR}"
-  exit $result
-fi
-
-cd "${CURRENT}"/assets/ts-node/webshell
-result=$?
-if [ $result -ne 0 ]; then
-  cd "${CUR}"
-  exit $result
-fi
-echo ""
-pwd
-pnpm install && pnpm up
+pnpm install -r && pnpm up -r
 result=$?
 if [ $result -ne 0 ]; then
   cd "${CUR}"

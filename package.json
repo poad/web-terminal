@@ -1,0 +1,8 @@
+{
+  "name": "web-terminal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "shell in your browser",
+  "author": "Kenji Saito",
+  "license": "MIT"
+}
