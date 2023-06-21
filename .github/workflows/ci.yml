@@ -27,4 +27,4 @@ jobs:
       - name: Build an image from Dockerfile
         env:
           DOCKER_BUILDKIT: 1
-        run: docker build --rm --target "${{ matrix.target }}" -t "poad/web-terminal:${{ matrix.target }}" . && \
+        run: docker build --rm --target "${{ matrix.target }}" -t "poad/web-terminal:${{ matrix.target }}" .
