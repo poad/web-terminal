@@ -21,7 +21,7 @@
     "xterm-addon-attach": "^0.8.0",
     "xterm-addon-fit": "^0.7.0",
     "xterm-addon-search": "^0.12.0",
-    "xterm-addon-web-links": "^0.8.0"
+    "xterm-addon-web-links": "^0.9.0"
   },
   "devDependencies": {
     "ts-loader": "^9.4.4",
