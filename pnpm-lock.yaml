@@ -38,8 +38,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       pnpm:
-        specifier: ^8.15.0
-        version: 8.15.0
+        specifier: ^8.15.1
+        version: 8.15.1
       utf8:
         specifier: ^3.0.0
         version: 3.0.0
@@ -105,8 +105,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       pnpm:
-        specifier: ^8.15.0
-        version: 8.15.0
+        specifier: ^8.15.1
+        version: 8.15.1
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.11.10)(typescript@5.3.3)
@@ -594,7 +594,7 @@ packages:
     hasBin: true
     dependencies:
       caniuse-lite: 1.0.30001581
-      electron-to-chromium: 1.4.648
+      electron-to-chromium: 1.4.649
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.22.3)
     dev: true
@@ -764,8 +764,8 @@ packages:
     resolution: {integrity: sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==}
     dev: false
 
-  /electron-to-chromium@1.4.648:
-    resolution: {integrity: sha512-EmFMarXeqJp9cUKu/QEciEApn0S/xRcpZWuAm32U7NgoZCimjsilKXHRO9saeEW55eHZagIDg6XTUOv32w9pjg==}
+  /electron-to-chromium@1.4.649:
+    resolution: {integrity: sha512-dq/owIaALxZGqWm5RXpKQ4baX6aDC19e2Z16c8SXYN+I71PyEKjbVqQUgm7kcuk8CRqljTKXbolo0XXDjxnh2w==}
     dev: true
 
   /encodeurl@1.0.2:
@@ -1292,8 +1292,8 @@ packages:
       find-up: 4.1.0
     dev: true
 
-  /pnpm@8.15.0:
-    resolution: {integrity: sha512-6kVRfVKF0SPqwCw3k1Bfof1tqQovxg0ejZ4MHpKSiG7Pr/UT8GK50cyAIbuGFQM7GsW+o7LuP8FlptcDS75rAw==}
+  /pnpm@8.15.1:
+    resolution: {integrity: sha512-gxz0xfi4N0r3FSHU0VPbSdcIbeYVwq98tenX64umMN2sRv6kldZD5VLvLmijqpmj5en77oaWcClnUE31xZyycw==}
     engines: {node: '>=16.14'}
     hasBin: true
     dev: false
