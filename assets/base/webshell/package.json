@@ -5,7 +5,7 @@
   "description": "shell in your browser",
   "dependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.11.14",
+    "@types/node": "^20.11.16",
     "@types/pty.js": "^0.2.40",
     "@types/socket.io": "^3.0.2",
     "@types/ws": "^8.5.10",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
-    "webpack": "^5.90.0",
+    "webpack": "^5.90.1",
     "webpack-cli": "^5.1.4"
   },
   "main": "app.js",
