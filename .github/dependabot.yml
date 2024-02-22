@@ -9,6 +9,10 @@ updates:
     rebase-strategy: auto
     assignees:
       - poad
+    groups:
+      actions:
+        patterns:
+          - '*'
 
   - package-ecosystem: npm
     directory: '/assets/base/webshell'
@@ -20,6 +24,10 @@ updates:
     rebase-strategy: auto
     assignees:
       - poad
+    groups:
+      base:
+        patterns:
+          - '*'
 
   - package-ecosystem: npm
     directory: '/assets/ts-node/webshell'
@@ -31,3 +39,7 @@ updates:
     rebase-strategy: auto
     assignees:
       - poad
+    groups:
+      ts-node:
+        patterns:
+          - '*'
