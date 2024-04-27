@@ -1,6 +1,6 @@
 ARG BASE_IMAGE="jammy"
 
-ARG PYTHON_VERSION="3.11"
+ARG PYTHON_VERSION="3.12"
 ARG PYTHON_PIP_VERSION="23.1.2"
 # https://github.com/docker-library/python/blob/master/3.11/bullseye/Dockerfile
 ARG PIP_DOWNLOAD_HASH="0d8570dc44796f4369b652222cf176b3db6ac70e"
@@ -12,11 +12,11 @@ ARG JAVA_HOME=/usr/lib/jvm/java-${JAVA_VERSION}-openjdk-amd64
 ARG SRC_JAVA_HOME=/usr/lib/jvm/zulu-${JAVA_VERSION}-azure-amd64
 
 # https://www.scala-sbt.org/download.html
-ARG SBT_VERSION="1.9.2"
+ARG SBT_VERSION="1.9.9"
 ARG SBT_HOME=/usr/local/sbt
 
 # https://swift.org/download/
-ARG SWIFT_VERSION="5.8.1"
+ARG SWIFT_VERSION="5.10"
 ARG SWIFT_SIGNING_KEY="A62AE125BBBFBB96A6E042EC925CC1CCED3D1561"
 ARG SWIFT_PLATFORM_COMMA_LESS="ubuntu2204"
 ARG SWIFT_PLATFORM="ubuntu22.04"
