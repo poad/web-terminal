@@ -321,7 +321,6 @@ RUN mkdir -p /home/node/.cargo \
  && rm -rf src tsconfig.json webpack.config.js \
  && chmod 744 /tmp/rustup.rs \
  && /tmp/rustup.rs -y \
- && cargo update \
  && cargo install evcxr_repl
 
 #-----------------------------
