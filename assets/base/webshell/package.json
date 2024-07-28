@@ -5,7 +5,7 @@
   "description": "shell in your browser",
   "dependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^20.14.12",
+    "@types/node": "^22.0.0",
     "@types/pty.js": "^0.2.40",
     "@types/socket.io": "^3.0.2",
     "@types/ws": "^8.5.11",
